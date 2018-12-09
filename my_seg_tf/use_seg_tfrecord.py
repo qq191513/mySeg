@@ -4,6 +4,7 @@ import tensorflow as tf
 import cv2
 import time
 import os
+from preprocess_data import preprocess_for_train
 preprocess_paraments={}
 example_name = {}
 
@@ -12,15 +13,11 @@ example_name = {}
 tfrecord_path = '/home/mo/work/seg_caps/my_seg/dataset_tf'
 
 #要还原原先图片尺寸
-origenal_size =[1280,1918,3]
+origenal_size =[256,256,3]
+mask_size = [256,256,1]
 
-#预处理方式
-to_random_brightness = True
-to_random_contrast = True
-to_resize_images = True
-resize_size =[1280,1918]
-to_random_crop = False
-crop_size= [28, 28, 1]
+#
+bbox = None
 
 #多队列、多线程、batch读图部分
 num_threads = 8
@@ -33,8 +30,6 @@ num_epochs = 10
 #显示方式
 cv2_show = False  # 用opencv显示或plt显示
 #######################     end     ############################################
-
-
 
 def int64_feature(values):
   if not isinstance(values, (tuple, list)):
@@ -72,9 +67,10 @@ def ReadTFRecord(tfrecords,example_name):
         w, h = origenal_size[0],origenal_size[1]
     else:
         w, h, c = origenal_size[0],origenal_size[1],origenal_size[2]
+        mask_w,mask_h,mask_c = mask_size[0],mask_size[1],mask_size[2]
 
     img = tf.reshape(img, [w,h,c])
-    mask = tf.reshape(mask,[w,h,1])
+    mask = tf.reshape(mask,[mask_w,mask_h,mask_c])
     # 不清楚为何加了这个tf.cast会显示不正常，模糊不清,先不加这个，不知道影响训练不
     # img = tf.cast(img, tf.float32)
     # mask = tf.cast(mask, tf.float32)
@@ -82,28 +78,7 @@ def ReadTFRecord(tfrecords,example_name):
     # return img
     return img, mask
 
-def preprocess_data(is_train,image,mask):
-    if is_train:
 
-        if to_random_brightness:
-            image = tf.image.random_brightness(image, max_delta=32. / 255.)
-        if to_random_contrast:
-            image = tf.image.random_contrast(image, lower=0.5, upper=1.5)
-        if to_resize_images:
-            # 只有method = 1没有被破坏最严重
-            image = tf.image.resize_images(image, resize_size,method=1)
-            mask = tf.image.resize_images(mask, resize_size,method=1)
-        if to_random_crop:
-            image = tf.random_crop(image, crop_size)
-
-    else:
-        if to_resize_images:
-            image = tf.image.resize_images(image, resize_size,method=1)
-            mask = tf.image.resize_images(mask, resize_size,method=1)
-        if to_random_crop:
-            image = tf.random_crop(image, crop_size)
-
-    return image,mask
 
 def feed_data_method(image,mask):
     if shuffle_batch:
@@ -207,7 +182,12 @@ def create_inputs_seg_hand(is_train):
     # # image,mask = preprocess_data(is_train,image,mask)            #预处理方式
     # images,masks = feed_data_method(image,mask)                   #喂图方式
     image,mask = ReadTFRecord(data_tfrecord,example_name)    #恢复原始数据
-    # image,mask = preprocess_data(is_train,image,mask)            #预处理方式
+    img_and_mask = tf.concat((image[...],mask[...]),axis=2)
+    # img_and_mask = preprocess_for_train(img_and_mask, origenal_size[1], origenal_size[0])            #预处理方式
+
+    # image = preprocess_for_train(image, origenal_size[1], origenal_size[0])            #预处理方式
+    # mask = preprocess_for_train(mask, origenal_size[1], origenal_size[0])            #预处理方式
+    image,mask = img_and_mask[...,0:2],img_and_mask[...,3]
     images,masks = feed_data_method(image,mask)                   #喂图方式
     return images,masks
 
