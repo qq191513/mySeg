@@ -24,14 +24,12 @@ KTF.set_session(sess)
 
 #########################   END   ####################################
 
-
-input_height = 320
-input_width = 640
-net_input_shape = (320, 640, 3)  # Only access RGB 3 channels.
+if not os.path.exists(cfg.save_weights_path):
+    os.makedirs(cfg.save_weights_path)
 
 
 def train():
-    model = UNet(net_input_shape)
+    model = UNet(cfg.input_shape)
 
     #编译和打印模型
     model.compile(optimizer='adam', loss='categorical_crossentropy',metrics=['accuracy'])
@@ -39,13 +37,13 @@ def train():
 
     #训练数据生成器G1
     G1 = imageSegmentationGenerator(cfg.train_images, cfg.train_annotations, cfg.train_batch_size,
-                               cfg.n_classes, cfg.input_height, cfg.input_width, cfg.output_height,
-                               cfg.output_width)
+                               cfg.n_classes, cfg.input_shape[0], cfg.input_shape[1], cfg.output_shape[0],
+                                    cfg.output_shape[1])
     #测试数据生成器G2
     if cfg.validate:
         G2 = imageSegmentationGenerator(cfg.val_images, cfg.val_annotations, cfg.val_batch_size,
-                                        cfg.n_classes, cfg.input_height, cfg.input_width, cfg.output_height,
-                                        cfg.output_width)
+                                        cfg.n_classes, cfg.input_shape[0], cfg.input_shape[1], cfg.output_shape[0],
+                                        cfg.output_shape[1])
     #循环训练
     for ep in range(1,cfg.epochs+1):
         #1、训练两种方式

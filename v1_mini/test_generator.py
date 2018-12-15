@@ -82,7 +82,7 @@ def use_generator_to_show(images_path , segs_path ,  batch_size,
 
 print('train dataset')
 use_generator_to_show(cfg.train_images , cfg.train_annotations ,  cfg.train_batch_size,
-	cfg.n_classes , cfg.input_height , cfg.input_width , cfg.output_height , cfg.output_width)
+			cfg.n_classes, cfg.input_shape[0], cfg.input_shape[1], cfg.output_shape[0],cfg.output_shape[1])
 
 # print('valid dataset')
 # use_generator_to_show(cfg.val_images , cfg.val_annotations ,  cfg.train_batch_size,

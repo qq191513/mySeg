@@ -48,7 +48,7 @@ def UNet(input_shape=(512,512,1)):
         conv9 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv9)
 
         conv10 = Conv2D(cfg.n_classes, (1, 1), activation='sigmoid')(conv9)
-        conv10 =Reshape((cfg.output_height * cfg.output_width,cfg.n_classes))(conv10)
+        conv10 =Reshape((cfg.output_shape[0] * cfg.output_shape[1],cfg.n_classes))(conv10)
 
         model = Model(inputs=[inputs], outputs=[conv10])
         return model
