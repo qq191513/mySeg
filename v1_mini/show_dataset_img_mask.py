@@ -3,15 +3,17 @@ import glob
 import numpy as np
 import cv2
 import random
-
-def imageSegmentationGenerator( images_path , segs_path ,  n_classes ):
+import os
+def show_dataset( images_path , segs_path ,  n_classes ):
 
 	assert images_path[-1] == '/'
 	assert segs_path[-1] == '/'
 
-	images = glob.glob( images_path + "*.jpg"  ) + glob.glob( images_path + "*.png"  ) +  glob.glob( images_path + "*.jpeg"  )
-	segmentations  = glob.glob( segs_path + "*.jpg"  ) + glob.glob( segs_path + "*.png"  ) +  glob.glob( segs_path + "*.jpeg"  )
+	images = glob.glob( os.path.join(images_path ,"*.jpg" ) ) \
+	+ glob.glob( os.path.join(images_path , "*.png" ) ) +  glob.glob( os.path.join(images_path, "*.jpeg" ) )
 	images.sort()
+	segmentations  =  glob.glob( os.path.join(segs_path ,"*.jpg" ) )\
+	+ glob.glob( os.path.join(segs_path , "*.png" ) ) +  glob.glob( os.path.join(segs_path, "*.jpeg" ) )
 	segmentations.sort()
 
 	colors = [( random.randint(0,255),random.randint(0,255),random.randint(0,255)) for _ in range(n_classes)]
@@ -40,5 +42,5 @@ def imageSegmentationGenerator( images_path , segs_path ,  n_classes ):
 
 
 
-imageSegmentationGenerator(cfg.train_images , cfg.train_annotations ,  cfg.train_batch_size)
-imageSegmentationGenerator(cfg.val_images , cfg.val_annotations ,  cfg.train_batch_size)
+show_dataset(cfg.train_images , cfg.train_annotations ,  cfg.train_batch_size)
+show_dataset(cfg.val_images , cfg.val_annotations ,  cfg.train_batch_size)
