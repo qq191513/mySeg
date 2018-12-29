@@ -1,0 +1,5 @@
+1、v6_segcap_hand效果差无药可救，试试u-net
+2、hand_64_64数据集（再小些加快测试）
+3、简化code
+4、predict_and_save_pics.py保存预测值
+5、show_4_img_mask_pred_final同时显示4张图

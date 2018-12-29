@@ -1,0 +1,6 @@
+1、使用segcap
+2、模型恢复
+3、训练history曲线
+5、改进segcap
+6、process_data/make_recon_gray_pics.py 制作 img * label的灰度图，用于做重构的标签
+7、生成器segcap_data_Generator

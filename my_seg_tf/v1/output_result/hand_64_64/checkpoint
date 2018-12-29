@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/mo/work/seg_caps/my_seg_tf/output_result/hand_64_64/model.ckpt"
+all_model_checkpoint_paths: "/home/mo/work/seg_caps/my_seg_tf/output_result/hand_64_64/model.ckpt"

@@ -1,0 +1,2 @@
+,AUC_ROC,AUC_prec_rec,F1_score,accuracy,jaccard_index,precision,sensitivity,specificity
+1,0.998353447,0.997834445,0.982261848,0.981995122,0.981995122,0.97001524,0.994876112,0.969114131
