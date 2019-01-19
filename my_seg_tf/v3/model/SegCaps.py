@@ -65,9 +65,9 @@ class SegCaps(object):
           labels * tf.square(tf.maximum(0., 0.9 - v_lens)) +
             0.5 * (1. - labels) * tf.square(tf.maximum(0., v_lens - 0.1)))
         if mask:
-          recon_loss = tf.reduce_mean(tf.square((images - recons) * labels))
+          recon_loss = tf.reduce_mean(tf.square(images * labels- recons))
         else:
-          recon_loss = tf.reduce_mean(tf.square((images - recons)))
+          recon_loss = tf.reduce_mean(tf.square(images * labels- recons))
         total_loss = class_loss + 0.0005 * recon_loss
 
         self.loss_summaries = [
@@ -136,8 +136,8 @@ class SegCaps(object):
 
         # 2. Get masked reconstruction
         x = self.conv2d(squeezed_x, 64, 1)
-        x = self.conv2d(squeezed_x, 128, 1)
-        recons = self.conv2d(squeezed_x, images.get_shape()[-1], 1)
+        x = self.conv2d(x, 128, 1)
+        recons = self.conv2d(x, images.get_shape()[-1], 1)
 
         return v_lens, recons
 

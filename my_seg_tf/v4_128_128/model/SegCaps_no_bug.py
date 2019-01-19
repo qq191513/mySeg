@@ -1,10 +1,8 @@
 import os
 
 import tensorflow as tf
-import sys
-sys.path.append('../')
-import config as cfg
-lr_init = cfg.lr_init
+
+
 class SegCaps(object):
     def __init__(self, sess, config, is_train):
         self.sess = sess
@@ -33,7 +31,7 @@ class SegCaps(object):
         self.summary_writer = tf.summary.FileWriter(self.ckpt_dir)
         self.summary_op = tf.summary.merge(self.loss_summaries)
         # self.summary_op = tf.summary.merge(self.acc_summaries)
-        self.optim = tf.train.AdamOptimizer(lr_init) #use NadamOptmizer
+        self.optim = tf.train.AdamOptimizer() #use NadamOptmizer
         self.train = self.optim.minimize(self.loss)
 
 
@@ -62,32 +60,8 @@ class SegCaps(object):
         result,recons = self.sess.run([self.result,self.recons], {self.images:images})
         return result,recons
 
-    def dice_coe(self,output, target, loss_type='jaccard', axis=(1, 2, 3), smooth=1e-5):
-
-        inse = tf.reduce_sum(output * target, axis=axis)
-        if loss_type == 'jaccard':
-            l = tf.reduce_sum(output * output, axis=axis)
-            r = tf.reduce_sum(target * target, axis=axis)
-        elif loss_type == 'sorensen':
-            l = tf.reduce_sum(output, axis=axis)
-            r = tf.reduce_sum(target, axis=axis)
-        else:
-            raise Exception("Unknow loss_type")
-        # old axis=[0,1,2,3]
-        # dice = 2 * (inse) / (l + r)
-        # epsilon = 1e-5
-        # dice = tf.clip_by_value(dice, 0, 1.0-epsilon) # if all empty, dice = 1
-        # new haodong
-        dice = (2. * inse + smooth) / (l + r + smooth)
-        ##
-        dice = tf.reduce_mean(dice, name='dice_coe')
-        return dice
-
-    def dice_coef_loss(self,y_true, y_pred, smooth=1):
-        dice_loss = 1 - self.dice_coe(y_pred, y_true, axis=[1, 2, 3])
-        return dice_loss
-
     def compute_loss(self, v_lens, recons, images, labels, mask=True):
+        # segmentation_loss = tf.losses.softmax_cross_entropy(labels, v_lens)
 
         class_loss = tf.reduce_mean(
           labels * tf.square(tf.maximum(0., 0.9 - v_lens)) +
@@ -96,10 +70,7 @@ class SegCaps(object):
           recon_loss = tf.reduce_mean(tf.square((images - recons) * labels))
         else:
           recon_loss = tf.reduce_mean(tf.square((images - recons)))
-
-        dice_loss = self.dice_coef_loss(labels, v_lens)
-
-        total_loss = class_loss + 0.0005 * recon_loss +dice_loss
+        total_loss = class_loss + 0.0005 * recon_loss
 
 
         self.loss_summaries = [

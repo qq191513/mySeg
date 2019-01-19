@@ -11,7 +11,7 @@ import os
 ##########################   要改的东西   #######################################
 num_epochs = cfg.num_epochs
 is_train=True #True使用训练集，#False使用测试集
-test_data_number = 100
+test_data_number = cfg.test_data_number
 predict_pics_save = cfg.predict_pics_save #
 batch_size = cfg.batch_size
 model_restore_name = None

@@ -7,7 +7,7 @@ import os
 import sys
 sys.path.append('../')
 
-import config as cfg
+import tools.config_unet_v1 as cfg
 example_name = {}
 ##########################   要改的东西   #######################################
 #tfrecords文件的路径
@@ -26,7 +26,7 @@ batch_size = cfg.batch_size
 shuffle_batch =True
 #训练多少轮，string_input_producer的num_epochs就写多少，
 #否则会爆出OutOfRangeError的错误（意思是消费量高于产出量）
-num_epochs = cfg.num_epochs
+epoch = cfg.epoch
 
 #显示方式
 cv2_show = False  # 用opencv显示或plt显示
@@ -40,10 +40,10 @@ def int64_feature(values):
 
 def ReadTFRecord(tfrecords,example_name):
     if len(tfrecords) == 1:
-        record_queue = tf.train.string_input_producer(tfrecords,num_epochs=num_epochs+1)#只有一个文件，谈不上打乱顺序
+        record_queue = tf.train.string_input_producer(tfrecords,num_epochs=epoch+1)#只有一个文件，谈不上打乱顺序
     else:
         # shuffle=False，num_epochs为3，即每个文件复制成3份，再打乱顺序，否则按原顺序
-        record_queue = tf.train.string_input_producer(tfrecords,shuffle=True, num_epochs=num_epochs+1)
+        record_queue = tf.train.string_input_producer(tfrecords,shuffle=True, num_epochs=epoch+1)
 
     reader = tf.TFRecordReader()
     key, value = reader.read(record_queue)
@@ -178,7 +178,6 @@ def create_inputs_seg_hand(is_train):
     else:
         data_tfrecord = search_keyword_files(tfrecord_path,test_keywords)
     show_loaded(data_tfrecord)
-
 
     image,mask = ReadTFRecord(data_tfrecord,example_name)    #恢复原始数据
     images,masks = feed_data_method(image,mask)                   #喂图方式

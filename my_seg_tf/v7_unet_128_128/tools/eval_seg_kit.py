@@ -6,35 +6,12 @@ from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import jaccard_similarity_score
 from sklearn.metrics import f1_score
 
-import numpy as np
-import tensorflow as tf
-import sys
-sys.path.append('../')
-from model.SegCaps import SegCaps
-import config as cfg
-import time
 from matplotlib import pyplot as plt
 import pandas as pd
 import os
-import sys
-sys.path.append('../')
-##########################   要改的东西   #######################################
-num_epochs = cfg.num_epochs
-is_train=True #True使用训练集，#False使用测试集
-test_data_number = cfg.test_data_number
-batch_size = cfg.batch_size
-save_list_csv = cfg.save_list_csv
-save_mean_csv = cfg.save_mean_csv
-save_plot_curve = cfg.save_plot_curve
-model_restore_name = "model_999.ckpt"
+import numpy as np
 
-##########################   end   ##########################################
-
-from data_process.use_seg_tfrecord import create_inputs_seg_hand
-
-
-
-def plot_roc_curve(y_true,y_scores):
+def plot_roc_curve(y_true,y_scores,save_plot_curve):
     fpr, tpr, thresholds = roc_curve((y_true), y_scores)
     AUC_ROC = roc_auc_score(y_true, y_scores)
     print("Area under the ROC curve: " + str(AUC_ROC))
@@ -49,7 +26,7 @@ def plot_roc_curve(y_true,y_scores):
     plt.close("all")
     return AUC_ROC
 
-def plot_precision_recall_curve(y_true, y_scores):
+def plot_precision_recall_curve(y_true, y_scores,save_plot_curve):
     # Precision-recall curve
     precision, recall, thresholds = precision_recall_curve(y_true, y_scores)
     precision = np.fliplr([precision])[0]  # so the array is increasing (you won't get negative AUC)
@@ -108,16 +85,13 @@ def get_F1_score(y_true, y_pred):
     print("F1 score (F-measure): " + str(F1_score))
     return F1_score
 
-
-
-
 def get_jaccard_index(y_true, y_pred):
     # Jaccard similarity index
     jaccard_index = jaccard_similarity_score(y_true, y_pred, normalize=True)
     print("Jaccard similarity score: " + str(jaccard_index))
     return jaccard_index
 
-def save_all_pics_value(name_list,all_list):
+def save_all_pics_value(name_list,all_list,save_list_csv):
 
     data = {}
     # 1、保存所有图片的评估值
@@ -128,7 +102,7 @@ def save_all_pics_value(name_list,all_list):
     result.to_csv(save_list_csv, encoding='gbk')
     print('save to {}'.format(save_list_csv))
 
-def save_mean_value(name_list,all_list):
+def save_mean_value(name_list,all_list,save_mean_csv):
 
     AUC_ROC_mean = np.mean(all_list[0])
     AUC_prec_rec_mean = np.mean(all_list[1])
@@ -148,93 +122,3 @@ def save_mean_value(name_list,all_list):
     mean_result = pd.DataFrame(data, index=[index])
     mean_result.to_csv(save_mean_csv, encoding='gbk')
     print('save to {}'.format(save_mean_csv))
-
-if  __name__== '__main__':
-    images, labels = create_inputs_seg_hand(is_train=is_train)
-
-    session_config = tf.ConfigProto(
-        device_count={'GPU': 0},
-        gpu_options={'allow_growth': 1,
-                     # 'per_process_gpu_memory_fraction': 0.1,
-                     'visible_device_list': '0'},
-        allow_soft_placement=True)  ##这个设置必须有，否则无论如何都会报cudnn不匹配的错误,BUG十分隐蔽，真是智障
-    with tf.Session(config=session_config) as sess:
-        # 1、先定义model才能执行第二步的初始化
-        model = SegCaps(sess, cfg, is_train=is_train)
-
-        # 2、初始化和启动线程
-        tf.global_variables_initializer().run()
-        tf.local_variables_initializer().run()
-        coord = tf.train.Coordinator()
-        threads = tf.train.start_queue_runners(sess=sess, coord=coord)
-        model.restore(model_restore_name)
-
-
-        #列表初始化
-        AUC_ROC_list,AUC_prec_rec_list,accuracy_list,specificity_list,sensitivity_list,\
-        precision_list,jaccard_index_list,F1_score_list,all_list,mean_list\
-            =[],[],[],[],[],[],[],[],[],[]
-        #3、测试图片
-        index = 0
-        for i in range(test_data_number//batch_size):
-            pics,pics_masks = sess.run([images,labels])  # 取出一个batchsize的图片。
-            pics = pics / 255
-            # 3、计算耗时
-            since = time.time()
-            pre, recons= model.predict(pics)
-            seconds = time.time() - since
-
-            pre_list = np.split(pre,batch_size,axis=0)
-            pres = np.squeeze(pre_list,axis=0)
-
-            for label, pre in zip( pics_masks, pres):
-                y_scores = pre.reshape(-1, 1)
-                y_true = label.reshape(-1, 1)
-
-                # 1、画ROC曲线
-                AUC_ROC = plot_roc_curve(y_true,y_scores)
-                AUC_ROC_list.append(AUC_ROC)
-
-                #2、画P_R-curve曲线
-                AUC_prec_rec = plot_precision_recall_curve(y_true,y_scores)
-                AUC_prec_rec_list.append(AUC_prec_rec)
-
-                #3、Confusion matrix
-                y_pred_binary = convert_to_binary(shape = y_scores.shape[0], y_scores = y_scores)
-                accuracy, specificity, sensitivity, precision \
-                    = plot_confusion_matrix(y_true, y_pred_binary)
-
-                accuracy_list.append(accuracy)
-                specificity_list.append(specificity)
-                sensitivity_list.append(sensitivity)
-                precision_list.append(precision)
-
-                #4、Jaccard similarity index
-                jaccard_index = get_jaccard_index(y_true, y_pred_binary)
-                jaccard_index_list.append(jaccard_index)
-
-                #5、F1 score
-                F1_score = get_F1_score(y_true, y_pred_binary)
-                F1_score_list.append(F1_score)
-
-                print('#########################   end   ####################################')
-
-
-        #1、评估数据存进列表中
-        all_list = [AUC_ROC_list, AUC_prec_rec_list, accuracy_list, specificity_list \
-            , sensitivity_list, precision_list, jaccard_index_list, F1_score_list]
-        name_list = ['AUC_ROC', 'AUC_prec_rec', 'accuracy', 'specificity',
-                     'sensitivity', 'precision', 'jaccard_index', 'F1_score']
-
-        # 2、panda保存所有图片的评估值到CSV文件
-        save_all_pics_value(name_list, all_list)
-
-        #3、panda保存平均值到CSV文件
-        save_mean_value(name_list, all_list)
-
-        #4、结束
-        coord.request_stop()
-        coord.join(threads)
-
-
-
