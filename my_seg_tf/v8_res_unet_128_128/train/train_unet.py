@@ -5,6 +5,7 @@ import os
 import tools.development_kit as dk
 from tools.loss import get_loss
 from data_process.preprocess import augmentImages
+import time
 ###############################   改这里    ################################
 from data_process.use_seg_tfrecord import create_inputs_seg_hand as create_inputs
 import tools.config.config_unet as cfg
@@ -65,21 +66,26 @@ if  __name__== '__main__':
         # 训练loop
         total_step = n_batch_train * epoch
         for epoch_n in range(start_epoch,epoch):
+            since = time.time()
             for n_batch in range(n_batch_train):
                 batch_x, batch_y = sess.run([train_x, train_y])
                 ##########################   数据增强   ###################################
-                batch_x = batch_x / 255  # 归一化，加了这句话loss值小了几十倍
+                batch_x = batch_x / 255.0  # 归一化，加了这句话loss值小了几十倍
                 batch_x, batch_y = augmentImages(batch_x, batch_y)
                 ##########################   end   #######################################
                 # 训练一个step
-                _, loss_value,dice_hard_value, summary_str ,step= sess.run(
-                    [train_step, loss,dice_hard, summary_op,global_step],
+                _, loss_value, dice_hard_value, summary_str, step = sess.run(
+                    [train_step, loss, dice_hard, summary_op, global_step],
                     feed_dict={x: batch_x, y: batch_y})
                 # 显示结果batch_size
-                dk.print_message(epoch_n,step,total_step,loss_value,dice_hard_value)
+                dk.print_effect_message(epoch_n,n_batch,n_batch_train,loss_value,dice_hard_value)
                 # 保存summary
                 if (step + 1) % 20 == 0:
                     summary_writer.add_summary(summary_str, step)
+
+            # 显示进度和耗时
+            seconds_mean = (time.time() - since) / n_batch_train
+            dk.print_progress_and_time_massge(seconds_mean,step,total_step)
 
             # 保存model
             if (((epoch_n + 1) % save_epoch_n)) == 0:

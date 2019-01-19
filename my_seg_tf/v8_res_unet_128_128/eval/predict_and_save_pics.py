@@ -8,10 +8,15 @@ import time
 import tools.development_kit as dk
 import cv2
 import os
-###############################   改这里    ######################################
-import tools.config.config_unet as cfg
-from model.unet import my_unet as model
 from data_process.use_seg_tfrecord import create_inputs_seg_hand as create_inputs
+###############################   使用unet 改这里    #############################
+# import tools.config.config_unet as cfg
+# from model.unet import my_unet as model
+##############################      end    #######################################
+
+###############################   使用res-unet 改这里    #########################
+import tools.config.config_res_unet as cfg
+from model.res_unet import my_residual_unet as model
 ##############################      end    #######################################
 
 ##########################   一般设置   #######################################
@@ -57,7 +62,7 @@ if  __name__== '__main__':
         for epoch_n in range(start_epoch, test_opoch):
             for n_batch in range(n_batch_test):
                 batch_x, batch_y = sess.run([train_x, train_y])  # 取出一个batchsize的图片。
-                batch_x = batch_x / 255
+                batch_x = batch_x / 255.0
                 # 3、预测输出
                 since = time.time()
                 predict = sess.run(prediction, feed_dict={x: batch_x})
