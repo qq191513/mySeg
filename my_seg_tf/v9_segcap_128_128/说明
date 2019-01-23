@@ -55,6 +55,12 @@ mean:  {'specificity': 0.9956646829528413, 'AUC_ROC': 0.893906581235121, 'sensit
  'precision': 0.9309304709132006, 'jaccard_index': 0.9806976318359375, 'F1_score': 0.8514411997987096,
  'accuracy': 0.9806976318359375, 'AUC_prec_rec': 0.8691669623979179}
 
+####50轮效果：
+ mean:  ([('AUC_ROC', 0.8970005094085598), ('AUC_prec_rec', 0.8790453748554411), ('accuracy', 0.980499267578125),
+ ('specificity', 0.9964381378228684), ('sensitivity', 0.797562880994251), ('precision', 0.9443535523103811),
+  ('jaccard_index', 0.980499267578125), ('F1_score', 0.858406268363336)])
+save to /home/mo/work/output/v9_segcap_128_128/res_segcap_my_final_my_128/eval_result_mean.csv
+
 
 
 

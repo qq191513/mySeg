@@ -34,11 +34,11 @@ train_data_number = cfg.train_data_number
 test_data_number = cfg.test_data_number
 test_opoch = 2
 ##########################   end   ##########################################
-os.makedirs(save_plot_curve_dir,exist_ok=True)
-
+#代码初始化
 session_config = dk.set_gpu()
 n_batch_train = int(train_data_number //batch_size)
 n_batch_test = int(test_data_number //batch_size)
+os.makedirs(save_plot_curve_dir,exist_ok=True)
 
 if  __name__== '__main__':
     with tf.Session(config=session_config) as sess:

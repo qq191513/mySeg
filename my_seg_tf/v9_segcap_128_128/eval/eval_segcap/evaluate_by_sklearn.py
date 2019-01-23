@@ -45,7 +45,7 @@ train_data_number = cfg.train_data_number
 test_data_number = cfg.test_data_number
 test_opoch = 2
 ##########################   end   ##########################################
-
+#代码初始化
 session_config = dk.set_gpu()
 n_batch_train = int(train_data_number //batch_size)
 n_batch_test = int(test_data_number //batch_size)
