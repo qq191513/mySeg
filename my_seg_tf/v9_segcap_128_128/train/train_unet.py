@@ -6,8 +6,16 @@ import tools.development_kit as dk
 from tools.loss import get_loss
 from data_process.preprocess import augmentImages
 import time
-###############################   改这里    ################################
 from data_process.use_seg_tfrecord import create_inputs_seg_hand as create_inputs
+
+###############################  unet 改这里    ################################
+# import tools.config.config_unet as cfg
+# from model.unet import my_unet as model
+# is_train = True
+# restore_model  = True
+##############################      end    #######################################
+
+###############################   res_unet 改这里    ################################
 import config.config_res_unet as cfg
 from model.res_unet import my_residual_unet as model
 is_train = True
@@ -55,14 +63,13 @@ if  __name__== '__main__':
         summary_dict = {'loss':loss,'dice_hard':dice_hard}
         summary_writer, summary_op = dk.set_summary(sess,logdir,summary_dict)
         # 恢复model
-        saver = dk.restore_model(sess,ckpt,restore_model =restore_model)
-        # 显示参数量
+        saver,start_epoch = dk.restore_model(sess, ckpt, restore_model=restore_model)        # 显示参数量
         dk.show_parament_numbers()
         # 若恢复model，则重新计算start_epoch继续
-        start_epoch = 0
-        if restore_model:
-            step = sess.run(global_step)
-            start_epoch = int(step/n_batch_train/save_epoch_n)*save_epoch_n
+        # start_epoch = 0
+        # if restore_model:
+        #     step = sess.run(global_step)
+        #     start_epoch = int(step/n_batch_train/save_epoch_n)*save_epoch_n
         # 训练loop
         total_step = n_batch_train * epoch
         for epoch_n in range(start_epoch,epoch):
@@ -74,8 +81,8 @@ if  __name__== '__main__':
                 batch_x, batch_y = augmentImages(batch_x, batch_y)
                 ##########################   end   #######################################
                 # 训练一个step
-                _, loss_value,dice_hard_value, summary_str ,step= sess.run(
-                    [train_step, loss,dice_hard, summary_op,global_step],
+                _, loss_value, dice_hard_value, summary_str, step = sess.run(
+                    [train_step, loss, dice_hard, summary_op, global_step],
                     feed_dict={x: batch_x, y: batch_y})
                 # 显示结果batch_size
                 dk.print_effect_message(epoch_n,n_batch,n_batch_train,loss_value,dice_hard_value)

@@ -8,7 +8,7 @@ from data_process.preprocess import augmentImages
 import time
 ###############################   改这里    ################################
 from data_process.use_seg_tfrecord import create_inputs_seg_hand as create_inputs
-import tools.config.config_unet as cfg
+import config.config_unet as cfg
 from model.unet import my_unet as model
 is_train = True
 restore_model  = True

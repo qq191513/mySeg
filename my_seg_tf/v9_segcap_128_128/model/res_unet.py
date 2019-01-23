@@ -119,7 +119,7 @@ def my_residual_unet(images,is_train,size, l2_reg):
     dropout_3 = tf.nn.dropout(pool3_1, keep_prob)
 
     # Middle （16*16）
-    multiple =8
+    multiple = 8
     convm_1 =conv(dropout_3, filters=start_filters*multiple, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     convm_2 = residual_block(convm_1, filters=start_filters*multiple, kernel_size=[3, 3], activation=tf.nn.relu, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     convm_3 = residual_block(convm_2, filters=start_filters*multiple, kernel_size=[3, 3], activation=tf.nn.relu, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)

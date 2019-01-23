@@ -67,53 +67,60 @@ def my_unet(images,is_train,size, l2_reg):
     # 无论如何都要设置成True，否则没有batchnorm。最终测试输出不正确
     is_training =True
 
+    # 1, 1, 64
     conv1_1 =conv(images, filters=64, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     conv1_2 = conv(conv1_1, filters=64, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     pool1 = pool(conv1_2)
 
 
-    # 1/2, 1/2, 64
+    # 1/2, 1/2, 128
     conv2_1 = conv(pool1, filters=128, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     conv2_2 = conv(conv2_1, filters=128, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     pool2 = pool(conv2_2)
     # pool2 = print_tensor(pool2,'pool2')
 
-    # 1/4, 1/4, 128
+    # 1/4, 1/4, 256
     conv3_1 = conv(pool2, filters=256, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     conv3_2 = conv(conv3_1, filters=256, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     pool3 = pool(conv3_2)
 
     # pool3 = print_tensor(pool3,'pool3')
-    # 1/8, 1/8, 256
+    # 1/8, 1/8, 512
     conv4_1 = conv(pool3, filters=512, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     conv4_2 = conv(conv4_1, filters=512, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     pool4 = pool(conv4_2)
     # pool4 = print_tensor(pool4,'pool4')
 
-    # 1/16, 1/16, 512
+    # middle (什么也不干，只来两次conv) 1/16, 1/16, 1024
     conv5_1 = conv(pool4, filters=1024, l2_reg_scale=l2_reg)
     conv5_2 = conv(conv5_1, filters=1024, l2_reg_scale=l2_reg)
     # conv4_2 = print_tensor(conv4_2,'conv4_2')
+
+    # 1/8, 1/8, 512
     AAA= conv_transpose(conv5_2, filters=512, l2_reg_scale=None,batchnorm_istraining=is_training)
     # AAA = print_tensor(AAA,'AAA ')
     concated1 = tf.concat([AAA, conv4_2], axis=3)
     # concated1 = print_tensor(concated1,'concated1')
-
-
     conv_up1_1 = conv(concated1, filters=512, l2_reg_scale=l2_reg)
     conv_up1_2 = conv(conv_up1_1, filters=512, l2_reg_scale=l2_reg)
-    concated2 = tf.concat([conv_transpose(conv_up1_2, filters=256, l2_reg_scale=l2_reg,batchnorm_istraining=is_training), conv3_2], axis=3)
 
+
+    # 1/4 1/4, 256
+    concated2 = tf.concat([conv_transpose(conv_up1_2, filters=256, l2_reg_scale=l2_reg,batchnorm_istraining=is_training), conv3_2], axis=3)
     conv_up2_1 = conv(concated2, filters=256, l2_reg_scale=l2_reg)
     conv_up2_2 = conv(conv_up2_1, filters=256, l2_reg_scale=l2_reg)
-    concated3 = tf.concat([conv_transpose(conv_up2_2, filters=128, l2_reg_scale=l2_reg,batchnorm_istraining=is_training), conv2_2], axis=3)
 
+    # 1/2, 1/2, 128
+    concated3 = tf.concat([conv_transpose(conv_up2_2, filters=128, l2_reg_scale=l2_reg,batchnorm_istraining=is_training), conv2_2], axis=3)
     conv_up3_1 = conv(concated3, filters=128, l2_reg_scale=l2_reg)
     conv_up3_2 = conv(conv_up3_1, filters=128, l2_reg_scale=l2_reg)
-    concated4 = tf.concat([conv_transpose(conv_up3_2, filters=64, l2_reg_scale=l2_reg,batchnorm_istraining=is_training), conv1_2], axis=3)
 
+    # 1, 1, 64
+    concated4 = tf.concat([conv_transpose(conv_up3_2, filters=64, l2_reg_scale=l2_reg,batchnorm_istraining=is_training), conv1_2], axis=3)
     conv_up4_1 = conv(concated4, filters=64, l2_reg_scale=l2_reg,batchnorm_istraining=is_training)
     conv_up4_2 = conv(conv_up4_1, filters=64, l2_reg_scale=l2_reg,batchnorm_istraining=is_training)
+
+    #out: 1, 1, 1
     pred = conv(conv_up4_2, filters=num_classes, kernel_size=[1, 1], activation=tf.nn.sigmoid, batchnorm_istraining=is_training)
 
     # self.pred = print_tensor(self.pred,'pred')

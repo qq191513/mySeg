@@ -6,12 +6,19 @@ import tools.development_kit as dk
 from tools.loss import get_loss
 from data_process.preprocess import augmentImages
 import time
-###############################   改这里    ################################
 from data_process.use_seg_tfrecord import create_inputs_seg_hand as create_inputs
-import config.config_res_unet as cfg
-from model.res_unet import my_residual_unet as model
+###############################  res_segcap 改这里    ######################################
+# import tools.config.config_res_segcap as cfg
+# from model.res_segcap import my_segcap as model
+# is_train = True
+# restore_model  = False
+##############################      end    #######################################
+
+###############################  res_segcap_mini 改这里    ######################################
+import config.config_res_segcap as cfg
+from model.res_segcap import my_segcap as model
 is_train = True
-restore_model  = True
+restore_model  = False
 ##############################      end    #######################################
 
 ###############################     cfg    ####################################

@@ -9,23 +9,32 @@ import tools.development_kit as dk
 import cv2
 import os
 from data_process.use_seg_tfrecord import create_inputs_seg_hand as create_inputs
-###############################   使用unet 改这里    #############################
-# import tools.config.config_unet as cfg
-# from model.unet import my_unet as model
-##############################      end    #######################################
+###############################  res_segcap 改这里    ######################################
+# import config.config_res_segcap as cfg
+# from model.res_segcap import my_segcap as model
+##############################      end    ######################################################
 
-###############################   使用res-unet 改这里    #########################
-import config.config_res_unet as cfg
-from model.res_unet import my_residual_unet as model
-##############################      end    #######################################
+###############################  res_segcap_mini 改这里    ######################################
+# import tools.config.config_res_segcap_mini as cfg
+# from model.res_segcap_mini import my_segcap as model
+##############################      end    ######################################################
+
+# ###############################  res_segcap_mini_v1 改这里    ######################################
+# import config.config_res_segcap_mini_v1 as cfg
+# from model.res_segcap_mini_v1 import my_segcap as model
+# ##############################      end    ######################################################
+
+###############################  res_segcap_my_final 改这里    ######################################
+import config.config_res_segcap_my_final as cfg
+from model.res_segcap_my_final import my_segcap as model
+##############################      end    ######################################################
 
 ##########################   一般设置   #######################################
 is_train=False #True使用训练集，#False使用测试集
-test_data_number = cfg.test_data_number
 batch_size = cfg.batch_size
 save_list_csv = cfg.save_list_csv
 save_mean_csv = cfg.save_mean_csv
-save_plot_curve = cfg.save_plot_curve
+save_plot_curve_dir = cfg.save_plot_curve_dir
 input_shape = cfg.input_shape
 labels_shape= cfg.labels_shape
 ckpt =cfg.ckpt
@@ -88,5 +97,6 @@ if  __name__== '__main__':
                     index += 1
                     print(save_name)
 
-    coord.request_stop()
-    coord.join(threads)
+        dk.stop_threads(coord, threads)
+        # coord.request_stop()
+        # coord.join(threads)

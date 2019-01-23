@@ -21,11 +21,10 @@ from model.res_unet import my_residual_unet as model
 
 ##########################   一般设置   #######################################
 is_train=False #True使用训练集，#False使用测试集
-test_data_number = cfg.test_data_number
 batch_size = cfg.batch_size
 save_list_csv = cfg.save_list_csv
 save_mean_csv = cfg.save_mean_csv
-save_plot_curve = cfg.save_plot_curve
+save_plot_curve_dir = cfg.save_plot_curve_dir
 input_shape = cfg.input_shape
 labels_shape= cfg.labels_shape
 ckpt =cfg.ckpt

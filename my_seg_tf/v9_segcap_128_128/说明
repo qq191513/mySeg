@@ -1,0 +1,63 @@
+res_segcap_mini_v1.py  测试1
+1、8个neuron
+2、2次routing
+3、二层unet
+4、start_s = 2
+
+res_segcap_mini_v1.py  测试2
+1、8个neuron
+2、3次routing
+3、二层unet
+4、start_s = 2
+
+res_segcap_mini_v2.py 测试3
+1、8个neuron
+2、2次routing
+3、二层unet
+4、start_s = 2
+5、加入margin_loss
+####效果比res_segcap_mini_v1 不怎么明显
+
+res_segcap_mini_v2.py 测试4
+1、8个neuron
+2、2次routing
+3、二层unet
+4、start_s = 2
+5、加入margin_loss +focus loss
+####效果比res_segcap_mini_v1 效果很明显
+
+res_segcap_mini.py
+1、32个neuron
+2、2次routing
+3、二层unet
+4、start_s = 2
+效果:一开始飙到0.8，然后一直都是0.5到0.6之间来，loss降不不下来，
+loss1.2飙升1.6，
+####效果比res_segcap_mini_v1  测试1 好一大截
+
+
+res_segcap.py   time: 5.070 seconds/step
+1、8个neuron
+2、2次routing
+3、三层unet
+4、start_s = 2
+####效果：dice_hard经常变0或极低，有时候又很高 但效果最好
+
+res_segcap_final.py
+1、8个neuron （使用32neuron报错，梯度为NaN）
+2、3次routing
+3、三层unet
+4、加入margin_loss +focus loss
+5、不使用bce loss
+6、start_s = 4 胶囊颗数翻倍
+####10轮效果：
+mean:  {'specificity': 0.9956646829528413, 'AUC_ROC': 0.893906581235121, 'sensitivity': 0.7921484795174009,
+ 'precision': 0.9309304709132006, 'jaccard_index': 0.9806976318359375, 'F1_score': 0.8514411997987096,
+ 'accuracy': 0.9806976318359375, 'AUC_prec_rec': 0.8691669623979179}
+
+
+
+
+
+
+

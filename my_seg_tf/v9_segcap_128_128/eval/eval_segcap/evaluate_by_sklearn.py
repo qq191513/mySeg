@@ -8,24 +8,35 @@ import time
 import tools.development_kit as dk
 import tools.eval_seg_kit as esk
 from data_process.use_seg_tfrecord import create_inputs_seg_hand as create_inputs
+import os
+###############################  res_segcap 改这里    ######################################
+# import config.config_res_segcap as cfg
+# from model.res_segcap import my_segcap as model
+##############################      end    ######################################################
 
-###############################   使用unet 改这里    #############################
-# import tools.config.config_unet as cfg
-# from model.unet import my_unet as model
-##############################      end    #######################################
-###############################   使用res-unet 改这里    #########################
-import config.config_res_unet as cfg
-from model.res_unet import my_residual_unet as model
-##############################      end    #######################################
+###############################  res_segcap_mini 改这里    ######################################
+# import tools.config.config_res_segcap_mini as cfg
+# from model.res_segcap_mini import my_segcap as model
+##############################      end    ######################################################
+
+###############################  res_segcap_mini_v1 改这里    ######################################
+# import config.config_res_segcap_mini_v1 as cfg
+# from model.res_segcap_mini_v1 import my_segcap as model
+##############################      end    ######################################################
+
+
+###############################  res_segcap_my_final 改这里    ######################################
+import config.config_res_segcap_my_final as cfg
+from model.res_segcap_my_final import my_segcap as model
+##############################      end    ######################################################
 
 
 ##########################   一般设置   #######################################
 is_train=False #True使用训练集，#False使用测试集
-test_data_number = cfg.test_data_number
 batch_size = cfg.batch_size
 save_list_csv = cfg.save_list_csv
 save_mean_csv = cfg.save_mean_csv
-save_plot_curve = cfg.save_plot_curve
+save_plot_curve_dir = cfg.save_plot_curve_dir
 input_shape = cfg.input_shape
 labels_shape= cfg.labels_shape
 ckpt =cfg.ckpt
@@ -38,6 +49,7 @@ test_opoch = 2
 session_config = dk.set_gpu()
 n_batch_train = int(train_data_number //batch_size)
 n_batch_test = int(test_data_number //batch_size)
+os.makedirs(save_plot_curve_dir,exist_ok=True)
 
 if  __name__== '__main__':
     with tf.Session(config=session_config) as sess:
@@ -61,6 +73,7 @@ if  __name__== '__main__':
             =[],[],[],[],[],[],[],[],[],[]
         # 测试loop
         start_epoch= 0
+        index = 0
         for epoch_n in range(start_epoch, test_opoch):
             for n_batch in range(n_batch_test):
                 batch_x,batch_y = sess.run([train_x,train_y])  # 取出一个batchsize的图片。
@@ -77,16 +90,17 @@ if  __name__== '__main__':
                 pre_pics_list = np.squeeze(batch_pre_list,axis=0)
 
                 for label, pre in zip( batch_y, pre_pics_list):
+                    index +=1
                     y_scores = pre.reshape(-1, 1)
                     y_true = label.reshape(-1, 1)
                     print('#########################   start   ####################################')
 
                     # 1、画ROC曲线
-                    AUC_ROC = esk.plot_roc_curve(y_true,y_scores,save_plot_curve)
+                    AUC_ROC = esk.plot_roc_curve(y_true,y_scores,save_plot_curve_dir,curve_name=str(index))
                     AUC_ROC_list.append(AUC_ROC)
 
                     #2、画P_R-curve曲线
-                    AUC_prec_rec = esk.plot_precision_recall_curve(y_true,y_scores,save_plot_curve)
+                    AUC_prec_rec = esk.plot_precision_recall_curve(y_true,y_scores,save_plot_curve_dir,curve_name=str(index))
 
                     #3、Confusion matrix
                     y_pred_binary = esk.convert_to_binary(shape = y_scores.shape[0], y_scores = y_scores)

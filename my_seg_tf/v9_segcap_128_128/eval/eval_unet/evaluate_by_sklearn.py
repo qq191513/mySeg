@@ -8,7 +8,7 @@ import time
 import tools.development_kit as dk
 import tools.eval_seg_kit as esk
 from data_process.use_seg_tfrecord import create_inputs_seg_hand as create_inputs
-
+import os
 ###############################   使用unet 改这里    #############################
 # import tools.config.config_unet as cfg
 # from model.unet import my_unet as model
@@ -25,7 +25,7 @@ test_data_number = cfg.test_data_number
 batch_size = cfg.batch_size
 save_list_csv = cfg.save_list_csv
 save_mean_csv = cfg.save_mean_csv
-save_plot_curve = cfg.save_plot_curve
+save_plot_curve_dir = cfg.save_plot_curve_dir
 input_shape = cfg.input_shape
 labels_shape= cfg.labels_shape
 ckpt =cfg.ckpt
@@ -34,6 +34,7 @@ train_data_number = cfg.train_data_number
 test_data_number = cfg.test_data_number
 test_opoch = 2
 ##########################   end   ##########################################
+os.makedirs(save_plot_curve_dir,exist_ok=True)
 
 session_config = dk.set_gpu()
 n_batch_train = int(train_data_number //batch_size)
@@ -61,6 +62,7 @@ if  __name__== '__main__':
             =[],[],[],[],[],[],[],[],[],[]
         # 测试loop
         start_epoch= 0
+        index = 0
         for epoch_n in range(start_epoch, test_opoch):
             for n_batch in range(n_batch_test):
                 batch_x,batch_y = sess.run([train_x,train_y])  # 取出一个batchsize的图片。
@@ -77,16 +79,17 @@ if  __name__== '__main__':
                 pre_pics_list = np.squeeze(batch_pre_list,axis=0)
 
                 for label, pre in zip( batch_y, pre_pics_list):
+                    index += 1
                     y_scores = pre.reshape(-1, 1)
                     y_true = label.reshape(-1, 1)
                     print('#########################   start   ####################################')
 
                     # 1、画ROC曲线
-                    AUC_ROC = esk.plot_roc_curve(y_true,y_scores,save_plot_curve)
+                    AUC_ROC = esk.plot_roc_curve(y_true,y_scores,save_plot_curve_dir,curve_name=str(index))
                     AUC_ROC_list.append(AUC_ROC)
 
                     #2、画P_R-curve曲线
-                    AUC_prec_rec = esk.plot_precision_recall_curve(y_true,y_scores,save_plot_curve)
+                    AUC_prec_rec = esk.plot_precision_recall_curve(y_true,y_scores,save_plot_curve_dir,curve_name=str(index))
 
                     #3、Confusion matrix
                     y_pred_binary = esk.convert_to_binary(shape = y_scores.shape[0], y_scores = y_scores)
