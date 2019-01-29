@@ -7,7 +7,7 @@ import os
 from data_process.preprocess import augmentImages
 
 ##########################   要改的东西   #######################################
-from model.unet import Unet
+from models.unet import Unet
 num_epochs = cfg.num_epochs
 train_print_log = os.path.join(cfg.train_print_log,'train_log.txt')
 model_restore_name = "model_unet_999.ckpt"

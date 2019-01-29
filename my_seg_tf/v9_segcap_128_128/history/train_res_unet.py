@@ -9,7 +9,7 @@ import time
 ###############################   改这里    ################################
 from data_process.use_seg_tfrecord import create_inputs_seg_hand as create_inputs
 import config.config_res_unet as cfg
-from model.res_unet import my_residual_unet as model
+from models.res_unet import my_residual_unet as model
 is_train = True
 restore_model  = True
 ##############################      end    #######################################

@@ -15,7 +15,7 @@ from data_process.use_seg_tfrecord import create_inputs_seg_hand as create_input
 ##############################      end    #######################################
 ###############################   使用res-unet 改这里    #########################
 import config.config_res_unet as cfg
-from model.res_unet import my_residual_unet as model
+from models.res_unet import my_residual_unet as model
 ##############################      end    #######################################
 
 

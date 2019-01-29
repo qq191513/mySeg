@@ -16,11 +16,13 @@ from data_process.use_seg_tfrecord import create_inputs_seg_hand as create_input
 ##############################      end    #######################################
 
 ###############################   res_unet 改这里    ################################
-import config.config_res_unet as cfg
-from model.res_unet import my_residual_unet as model
+# import config.config_res_unet as cfg
+# from models.res_unet import my_residual_unet as model
 is_train = True
 restore_model  = True
 ##############################      end    #######################################
+from choice import cfg
+from choice import model
 
 ###############################     cfg    ####################################
 ckpt =cfg.ckpt

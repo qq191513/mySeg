@@ -9,7 +9,7 @@ input_shape =[batch_size,128,128,3]
 labels_shape =[batch_size,128,128,1]
 labels_shape_vec =[batch_size,128*128*1]
 
-epoch = 50 #共多少个epoch
+epoch = 150 #共多少个epoch
 save_epoch_n = 5  #每多少epoch保存一次
 lr_range=(1e-3,1e-6,0.96)
 test_data_number =9

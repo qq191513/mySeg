@@ -1,0 +1,131 @@
+res_segcap_mini_v1.py  测试1
+1、8个neuron
+2、2次routing
+3、二层unet
+4、start_s = 2
+
+res_segcap_mini_v1.py  测试2
+1、8个neuron
+2、3次routing
+3、二层unet
+4、start_s = 2
+
+res_segcap_mini_v2.py 测试3
+1、8个neuron
+2、2次routing
+3、二层unet
+4、start_s = 2
+5、加入margin_loss
+####效果比res_segcap_mini_v1 不怎么明显
+
+res_segcap_mini_v2.py 测试4
+1、8个neuron
+2、2次routing
+3、二层unet
+4、start_s = 2
+5、加入margin_loss +focus loss
+####效果比res_segcap_mini_v1 效果很明显
+
+res_segcap_mini.py
+1、32个neuron
+2、2次routing
+3、二层unet
+4、start_s = 2
+效果:一开始飙到0.8，然后一直都是0.5到0.6之间来，loss降不不下来，
+loss1.2飙升1.6，
+####效果比res_segcap_mini_v1  测试1 好一大截
+
+
+res_segcap.py   time: 5.070 seconds/step
+1、8个neuron
+2、2次routing
+3、三层unet
+4、start_s = 2
+####效果：dice_hard经常变0或极低，有时候又很高 但效果最好
+
+res_segcap_final.py
+1、8个neuron （使用32neuron报错，梯度为NaN）
+2、3次routing
+3、三层unet
+4、加入margin_loss +focus loss
+5、不使用bce loss
+6、start_s = 4 胶囊颗数翻倍
+#### v9_segcap_128_128 10轮效果：
+mean:  {'specificity': 0.9956646829528413, 'AUC_ROC': 0.893906581235121, 'sensitivity': 0.7921484795174009,
+ 'precision': 0.9309304709132006, 'jaccard_index': 0.9806976318359375, 'F1_score': 0.8514411997987096,
+ 'accuracy': 0.9806976318359375, 'AUC_prec_rec': 0.8691669623979179}
+
+#### v9_segcap_128_128 50轮效果：
+ mean:  ([('AUC_ROC', 0.8970005094085598), ('AUC_prec_rec', 0.8790453748554411), ('accuracy', 0.980499267578125),
+ ('specificity', 0.9964381378228684), ('sensitivity', 0.797562880994251), ('precision', 0.9443535523103811),
+  ('jaccard_index', 0.980499267578125), ('F1_score', 0.858406268363336)])
+save to /home/mo/work/output/v9_segcap_128_128/res_segcap_my_final_my_128/eval_result_mean.csv
+
+#### v9_segcap_128_128 100轮效果：
+mean:  OrderedDict([('AUC_ROC', 0.9116163343753412), ('AUC_prec_rec', 0.8910169956512622),
+('accuracy', 0.9840164184570312),('specificity', 0.9962343587113098),
+ ('sensitivity', 0.8269983100393725), ('precision', 0.9425387330209645),
+('jaccard_index', 0.9840164184570312), ('F1_score', 0.8758706080733376)])
+#### v9_segcap_128_128 134轮效果：mean:  OrderedDict([('AUC_ROC', 0.8967064664045288), ('AUC_prec_rec', 0.8899090127554417), ('accuracy', 0.9830589294433594), ('specificity', 0.9975118486443824),('sensitivity', 0.795901084164675), ('precision', 0.9692532450571458), ('jaccard_index', 0.9830589294433594), ('F1_score', 0.870491298914045)])
+#### v9_segcap_128_128 139轮效果：mean:  OrderedDict([('AUC_ROC', 0.9083873179900815), ('AUC_prec_rec', 0.8958537292919173), ('accuracy', 0.9836540222167969), ('specificity', 0.9971766111878757),('sensitivity', 0.8195980247922874),  ('precision', 0.958376523635297),('jaccard_index', 0.9836540222167969), ('F1_score', 0.8803022031615406)])
+(最佳segcap)
+#### v9_segcap_128_128 144轮效果：mean:  OrderedDict([('AUC_ROC', 0.9206079411033478), ('AUC_prec_rec', 0.9021630906194539)，('accuracy', 0.9850959777832031), ('specificity', 0.9964056054774745),('sensitivity', 0.8448102767292209), ('precision', 0.9479459277030462),('jaccard_index', 0.9850959777832031), ('F1_score', 0.8908697560295795)])
+#### v9_segcap_128_128 149轮效果：mean:  OrderedDict([('AUC_ROC', 0.9141983908653033), ('AUC_prec_rec', 0.891139812941619),  ('accuracy', 0.9840011596679688), ('specificity', 0.9960256906229159),('sensitivity', 0.8323710911076907), ('precision', 0.9376252095802349),('jaccard_index', 0.9840011596679688), ('F1_score', 0.8777136904265055)])
+
+#### v8_res_unet_128_128 40轮效果 mean:  OrderedDict([('AUC_ROC', 0.9479252726900247), ('AUC_prec_rec', 0.9257857345407565), ('accuracy', 0.9877471923828125), ('specificity', 0.9955168651269433),('sensitivity', 0.9003336802531061), ('precision', 0.9431162983498915),('jaccard_index', 0.9877471923828125), ('F1_score', 0.9193196904206978)])
+#### v7_unet_128_128 40轮效果：   mean:  OrderedDict([('AUC_ROC', 0.9613290471459457), ('AUC_prec_rec', 0.8835450556984754), ('accuracy', 0.9799728393554688), ('specificity', 0.9837318654310138),('sensitivity', 0.9389262288608778), ('precision', 0.823200961393495), ('jaccard_index', 0.9799728393554688), ('F1_score', 0.8731265653201319)])
+
+
+
+res_segcap_my_final_v1.py
+# 1  (128 -> 128)
+conv1 =conv(images, filters=8, kernel_size=[1, 1],l
+
+epoch_n=1 n_batch=6/27 loss=1.114 dice_hard=0.860
+epoch_n=2 n_batch=3/27 loss=1.112 dice_hard=0.929
+epoch_n=3 n_batch=10/27 loss=1.088 dice_hard=0.935
+epoch_n=9 梯度Nan报错
+
+
+from models.res_segcap_mini_v2 import my_segcap as model
+progress: 280/280---100.00%  time: 2.697 seconds/step max: 0.915
+
+
+
+
+
+res_segcap_mini_v1.py
+progress: 112/2800---4.00%  time: 3.262 seconds/step max: 0.804
+progress: 168/2800---6.00%  time: 3.218 seconds/step max: 0.773
+
+res_segcap_mini_v2.py
+progress: 28/2800---1.00%  time: 3.777 seconds/step min-max:0.079-0.748 mean:0.498
+progress: 56/2800---2.00%  time: 3.358 seconds/step min-max:0.315-0.792 mean:0.603
+progress: 84/2800---3.00%  time: 3.320 seconds/step min-max:0.430-0.778 mean:0.661
+progress: 112/2800---4.00%  time: 3.414 seconds/step min-max:0.425-0.812 mean:0.681
+progress: 140/2800---5.00%  time: 3.368 seconds/step min-max:0.444-0.796 mean:0.652
+progress: 168/2800---6.00%  time: 3.361 seconds/step min-max:0.250-0.888 mean:0.726
+
+res_segcap_mini_v3.py
+progress: 28/2800---1.00%  time: 4.477 seconds/step min-max:0.006-0.719 mean:0.396
+progress: 56/2800---2.00%  time: 4.001 seconds/step min-max:0.058-0.723 mean:0.525
+progress: 84/2800---3.00%  time: 3.954 seconds/step min-max:0.282-0.824 mean:0.646
+progress: 112/2800---4.00%  time: 3.946 seconds/step min-max:0.202-0.785 mean:0.558
+progress: 140/2800---5.00%  time: 3.947 seconds/step min-max:0.399-0.870 mean:0.656
+progress: 168/2800---6.00%  time: 4.009 seconds/step min-max:0.499-0.842 mean:0.703
+
+progress: 28/2800---1.00%  time: 4.533 seconds/step min-max:0.012-0.766 mean:0.396
+progress: 56/2800---2.00%  time: 4.056 seconds/step min-max:0.331-0.816 mean:0.557
+
+
+
+
+三种算法比较
+v7_unet_128_128 parament numbers is : 34,519,363
+mean:  OrderedDict([('AUC_ROC', 0.9606552192797093), ('AUC_prec_rec', 0.895876769755787), ('accuracy', 0.9811363220214844), ('specificity', 0.9851672282336053), ('sensitivity', 0.9361432103258134), ('precision', 0.8503689351427917), ('jaccard_index', 0.9811363220214844), ('F1_score', 0.8890815144426283)])
+
+v8_res_unet_128_128  parament numbers is : 5,080,931
+mean:  ([('AUC_ROC', 0.9425591632587258), ('AUC_prec_rec', 0.9255883263495559), ('accuracy', 0.9880905151367188), ('specificity', 0.9962219998092621), ('sensitivity', 0.8888963267081896), ('precision', 0.9538536597311567), ('jaccard_index', 0.9880905151367188), ('F1_score', 0.9176652384850472)])
+
+v10_segcap_128_128 parament numbers is : 171,997
+mean:  OrderedDict([('AUC_ROC', 0.900126435340487), ('AUC_prec_rec', 0.8916562028350363), ('accuracy', 0.9817695617675781), ('specificity', 0.9973161225657672), ('sensitivity', 0.8029367481152068), ('precision', 0.9646056990587722), ('jaccard_index', 0.9817695617675781), ('F1_score', 0.8719323319426279)])

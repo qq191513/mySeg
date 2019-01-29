@@ -1,5 +1,4 @@
 import tensorflow as tf
-import os
 import pandas as pd
 from matplotlib import pyplot as plt
 from scipy import interpolate

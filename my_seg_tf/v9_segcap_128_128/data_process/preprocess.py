@@ -4,12 +4,12 @@ import sys
 sys.path.append('../')
 
 import tensorflow as tf
-import config.config_unet as cfg
+# import config.config_unet as cfg
 import matplotlib.pyplot as plt
 import time
 from keras.preprocessing.image import random_rotation, random_shift, random_zoom, random_shear
 from scipy.ndimage.interpolation import map_coordinates
-
+from choice import cfg
 ##########################   要改的东西   #######################################
 #显示方式
 cv2_show = False  # 用opencv显示或plt显示

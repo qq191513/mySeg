@@ -37,14 +37,18 @@ from data_process.use_seg_tfrecord import create_inputs_seg_hand as create_input
 
 
 ###############################  res_segcap_my_final 改这里    ######################################
-import config.config_res_segcap_my_final as cfg
-from model.res_segcap_my_final import my_segcap as model
+# import config.config_res_segcap_my_final as cfg
+# from model.res_segcap_my_final import my_segcap as model
+from choice import choice_cfg
+from choice import choice_model
 is_train = True
 restore_model  = True
 ##############################      end    ######################################################
 
 
 ###############################     cfg    ####################################
+model=choice_model()
+cfg =choice_cfg()
 ckpt =cfg.ckpt
 batch_size = cfg.batch_size
 input_shape = cfg.input_shape

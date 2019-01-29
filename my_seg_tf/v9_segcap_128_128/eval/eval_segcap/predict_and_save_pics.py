@@ -25,9 +25,11 @@ from data_process.use_seg_tfrecord import create_inputs_seg_hand as create_input
 # ##############################      end    ######################################################
 
 ###############################  res_segcap_my_final 改这里    ######################################
-import config.config_res_segcap_my_final as cfg
-from model.res_segcap_my_final import my_segcap as model
+# import config.config_res_segcap_my_final as cfg
+# from models.res_segcap_my_final import my_segcap as model
 ##############################      end    ######################################################
+from choice import cfg
+from choice import model
 
 ##########################   一般设置   #######################################
 is_train=False #True使用训练集，#False使用测试集

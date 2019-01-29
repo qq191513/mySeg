@@ -14,10 +14,11 @@ import os
 # from model.unet import my_unet as model
 ##############################      end    #######################################
 ###############################   使用res-unet 改这里    #########################
-import config.config_res_unet as cfg
-from model.res_unet import my_residual_unet as model
+# import config.config_res_unet as cfg
+# from models.res_unet import my_residual_unet as model
 ##############################      end    #######################################
-
+from choice import cfg
+from choice import model
 
 ##########################   一般设置   #######################################
 is_train=False #True使用训练集，#False使用测试集

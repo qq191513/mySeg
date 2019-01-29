@@ -7,7 +7,8 @@ import os
 import sys
 sys.path.append('../')
 
-import config.config_unet as cfg
+# import config.config_unet as cfg
+from choice import cfg
 example_name = {}
 ##########################   要改的东西   #######################################
 #tfrecords文件的路径

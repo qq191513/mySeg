@@ -1,0 +1,103 @@
+
+#########################################################################################################################
+
+res_segcap_mini_v1.py
+1、margin_focus
+progress: 28/2800---1.00%  time: 4.500 seconds/step min-max:0.165-0.743 mean:0.454
+progress: 56/2800---2.00%  time: 4.059 seconds/step min-max:0.035-0.751 mean:0.538
+progress: 84/2800---3.00%  time: 4.072 seconds/step min-max:0.046-0.825 mean:0.538
+progress: 112/2800---4.00%  time: 4.064 seconds/step min-max:0.066-0.824 mean:0.560
+
+2、bce_dice_margin_focus
+progress: 28/280---10.00%  time: 3.057 seconds/step min-max:0.001-0.448 mean:0.109
+progress: 56/280---20.00%  time: 2.692 seconds/step min-max:0.033-0.549 mean:0.281
+progress: 84/280---30.00%  time: 2.683 seconds/step min-max:0.000-0.849 mean:0.352
+progress: 112/280---40.00%  time: 2.629 seconds/step min-max:0.026-0.794 mean:0.433
+progress: 140/280---50.00%  time: 2.648 seconds/step min-max:0.198-0.820 mean:0.607
+
+
+#########################################################################################################################
+
+res_segcap_mini_v2.py 在v1的基础上：1、加入Skip0 2、最后输出处加入多层CNN提取特征
+3、margin_focus
+progress: 28/2800---1.00%  time: 3.632 seconds/step min-max:0.000-0.646 mean:0.306
+progress: 56/2800---2.00%  time: 3.238 seconds/step min-max:0.174-0.800 mean:0.488
+progress: 84/2800---3.00%  time: 3.241 seconds/step min-max:0.112-0.810 mean:0.557
+progress: 112/2800---4.00%  time: 3.121 seconds/step min-max:0.017-0.803 mean:0.454
+progress: 140/2800---5.00%  time: 3.230 seconds/step min-max:0.334-0.836 mean:0.575
+
+4、bce_dice_margin_focus  四个loss组合翻倍效果
+progress: 28/2800---1.00%  time: 3.699 seconds/step min-max:0.292-0.848 mean:0.633
+progress: 56/2800---2.00%  time: 3.212 seconds/step min-max:0.494-0.839 mean:0.740
+progress: 84/2800---3.00%  time: 3.335 seconds/step min-max:0.356-0.774 mean:0.636
+progress: 112/2800---4.00%  time: 3.299 seconds/step min-max:0.263-0.828 mean:0.739
+progress: 140/2800---5.00%  time: 3.235 seconds/step min-max:0.527-0.850 mean:0.783
+#########################################################################################################################
+
+##失败
+res_segcap_mini_v3.py 在v2的基础上：1、prime_concat前面多尺度  2、最后输出处大尺度3x3
+progress: 28/2800---1.00%  time: 4.477 seconds/step min-max:0.006-0.719 mean:0.396
+progress: 56/2800---2.00%  time: 4.001 seconds/step min-max:0.058-0.723 mean:0.525
+progress: 84/2800---3.00%  time: 3.954 seconds/step min-max:0.282-0.824 mean:0.646
+progress: 112/2800---4.00%  time: 3.946 seconds/step min-max:0.202-0.785 mean:0.558
+progress: 140/2800---5.00%  time: 3.947 seconds/step min-max:0.399-0.870 mean:0.656
+
+progress: 28/2800---1.00%  time: 5.055 seconds/step min-max:0.063-0.623 mean:0.345
+progress: 56/2800---2.00%  time: 4.554 seconds/step min-max:0.265-0.694 mean:0.498
+
+#########################################################################################################################
+res_segcap_mini_v4.py 简化v2代码
+#########################################################################################################################
+res_segcap_mini_v5.py parament numbers is : 811,229
+在v4的基础上：2、最后输出处 1024 512 256
+
+progress: 28/2800---1.00%  time: 4.536 seconds/step min-max:0.114-0.864 mean:0.510
+progress: 56/2800---2.00%  time: 4.053 seconds/step min-max:0.445-0.849 mean:0.715
+progress: 84/2800---3.00%  time: 4.039 seconds/step min-max:0.509-0.869 mean:0.758
+progress: 112/2800---4.00%  time: 4.077 seconds/step min-max:0.434-0.873 mean:0.758
+progress: 140/2800---5.00%  time: 4.068 seconds/step min-max:0.402-0.906 mean:0.817 @@@@@@@@@@@@@@@
+
+#########################################################################################################################
+res_segcap_mini_v6.py 在v5的基础上：  前5轮初始化不好（达不到基本要求要重新训练，CNN也有投错胎的时候）
+前5轮初始化不好也造成性能的下降，
+实验1：
+progress: 28/2800---1.00%  time: 4.438 seconds/step min-max:0.017-0.837 mean:0.625
+实验2：
+progress: 28/2800---1.00%  time: 4.454 seconds/step min-max:0.008-0.841 mean:0.484
+实验3：
+progress: 28/2800---1.00%  time: 4.490 seconds/step min-max:0.000-0.466 mean:0.179
+progress: 56/2800---2.00%  time: 4.014 seconds/step min-max:0.000-0.499 mean:0.211
+实验4：
+progress: 28/2800---1.00%  time: 4.541 seconds/step min-max:0.001-0.807 mean:0.407
+progress: 56/2800---2.00%  time: 3.894 seconds/step min-max:0.355-0.758 mean:0.600
+实验5：
+progress: 28/2800---1.00%  time: 4.486 seconds/step min-max:0.000-0.419 mean:0.078
+progress: 56/2800---2.00%  time: 4.013 seconds/step min-max:0.003-0.504 mean:0.213
+
+
+
+atom用16个
+progress: 28/2800---1.00%  time: 5.278 seconds/step min-max:0.000-0.802 mean:0.470
+
+
+#########################################################################################################################
+
+#########################################################################################################################
+
+#########################################################################################################################
+
+#########################################################################################################################
+
+#########################################################################################################################
+
+#########################################################################################################################
+
+三种算法比较
+v7_unet_128_128 parament numbers is : 34,519,363
+mean:  OrderedDict([('AUC_ROC', 0.9606552192797093), ('AUC_prec_rec', 0.895876769755787), ('accuracy', 0.9811363220214844), ('specificity', 0.9851672282336053), ('sensitivity', 0.9361432103258134), ('precision', 0.8503689351427917), ('jaccard_index', 0.9811363220214844), ('F1_score', 0.8890815144426283)])
+
+v8_res_unet_128_128  parament numbers is : 5,080,931
+mean:  ([('AUC_ROC', 0.9425591632587258), ('AUC_prec_rec', 0.9255883263495559), ('accuracy', 0.9880905151367188), ('specificity', 0.9962219998092621), ('sensitivity', 0.8888963267081896), ('precision', 0.9538536597311567), ('jaccard_index', 0.9880905151367188), ('F1_score', 0.9176652384850472)])
+
+v10_segcap_128_128 parament numbers is : 171,997
+mean:  OrderedDict([('AUC_ROC', 0.900126435340487), ('AUC_prec_rec', 0.8916562028350363), ('accuracy', 0.9817695617675781), ('specificity', 0.9973161225657672), ('sensitivity', 0.8029367481152068), ('precision', 0.9646056990587722), ('jaccard_index', 0.9817695617675781), ('F1_score', 0.8719323319426279)])
