@@ -91,9 +91,9 @@ if  __name__== '__main__':
         image_RGB = cv2.resize(frame, (cfg.input_shape[0], cfg.input_shape[1]))
 
         # 3、图片旋转
-        image_RGB = np.rot90(image_RGB)
-        image_RGB = np.rot90(image_RGB)
-        image_RGB = np.rot90(image_RGB)
+        # image_90 = np.rot90(image_RGB)  # 转90°
+        # image_180 = np.rot90(image_RGB, 2)  # 转180°
+        image_270 = np.rot90(image_RGB, 3)  # 转270°
 
         # 4、RGB2BGR，训练的时候是用BGR格式训练的，因此要还原成BGR格式
         image = cv2.cvtColor(image_RGB, cv2.COLOR_RGB2BGR)
