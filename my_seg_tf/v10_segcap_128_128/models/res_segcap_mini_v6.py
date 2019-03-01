@@ -186,7 +186,7 @@ def my_segcap(images,is_train,size, l2_reg):
     start_s = 2
     atom = 16
     routing = 3
-
+    end_points =[]
 
     # 1  (128 -> 128)
 
@@ -200,6 +200,9 @@ def my_segcap(images,is_train,size, l2_reg):
 
     multiple = 1
     cap1_1 = residual_cap_block(conv_prime,routing=routing)
+    ################   end_points  ##########################
+    end_points.append(cap1_1)
+    ################     end       ###########################
     print('residual_cap_block: {}'.format(cap1_1.get_shape()))
     cap1_2 = capsule(cap1_1, "conv", k=3, s=2, t=start_s*multiple, z=atom, routing=routing)
     print('cap1_2: {}'.format(cap1_2.get_shape()))
@@ -244,7 +247,6 @@ def my_segcap(images,is_train,size, l2_reg):
     print('cap_out_3: {}'.format(cap_out_3.get_shape()))
     u_cap_concat_4 = tf.concat([cap_out_3, skip0], axis=4)
     print('u_cap_concat_4: {}'.format(u_cap_concat_4.get_shape()))
-
     #普通输出层
     cap_out_4 = tf.squeeze(u_cap_concat_4, axis=3)
     print('cap_out_4: {}'.format(cap_out_4.get_shape()))
@@ -258,4 +260,7 @@ def my_segcap(images,is_train,size, l2_reg):
     print('cap_out_8: {}'.format(cap_out_8.get_shape()))
     cap_out_9 = bn(cap_out_8, is_training)
     print('cap_out_9: {}'.format(cap_out_9.get_shape()))
-    return cap_out_9
+    # ################   end_points  ##########################
+    # end_points.append(cap_out_9)
+    # ################     end       ###########################
+    return cap_out_9,end_points

@@ -189,7 +189,7 @@ def my_segcap(images,is_train,size, l2_reg):
     routing = 3
     # start_s = 6
     # atom = 16
-
+    end_points =[]
     # 1  (128 -> 128)
     conv1 =conv(images, filters=atom, kernel_size=[1,1],l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     conv_prime = tf.expand_dims(conv1, axis=3)  # [N, H, W, t=1, z]
@@ -277,7 +277,7 @@ def my_segcap(images,is_train,size, l2_reg):
     # cap_out_4 = print_tensor(cap_out_4,'cap_out_4')
     cap_out_8 = bn(cap_out_7, is_training)
     # cap_out_5 = print_tensor(cap_out_5,'cap_out_5')
-    return cap_out_8
+    return cap_out_8,end_points
 
 # def my_unet(images,is_train,size, l2_reg):
 #     # self.labels = print_tensor(self.labels,'pool2')

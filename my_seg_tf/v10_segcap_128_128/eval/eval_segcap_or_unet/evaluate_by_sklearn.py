@@ -41,7 +41,7 @@ def evaluate_by_sklearn_model():
         x = tf.placeholder(tf.float32, shape=input_shape)
         y = tf.placeholder(tf.float32, shape=labels_shape)
         # 构建网络
-        prediction = model(images=x, is_train=True, size=input_shape, l2_reg=0.0001)
+        prediction,end_points = model(images=x, is_train=True, size=input_shape, l2_reg=0.0001)
         prediction = tf.reshape(prediction, labels_shape)
         # 初始化变量
         coord, threads = dk.init_variables_and_start_thread(sess)

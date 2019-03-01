@@ -92,7 +92,7 @@ def my_residual_unet(images,is_train,size, l2_reg):
     is_training = True
     start_filters = 32
     keep_prob = 0.8
-
+    end_points =[]
     multiple = 1
     conv1_1 =conv(images, filters=start_filters*multiple, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     conv1_2 = residual_block(conv1_1, filters=start_filters*multiple, kernel_size=[3, 3], activation=tf.nn.relu, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
@@ -155,4 +155,4 @@ def my_residual_unet(images,is_train,size, l2_reg):
                                 l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
 
     output_layer = conv(u_conv_3_3, filters=1,kernel_size=[1, 1],activation=tf.nn.sigmoid ,l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
-    return output_layer
+    return output_layer,end_points

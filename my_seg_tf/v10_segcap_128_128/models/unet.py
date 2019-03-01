@@ -66,7 +66,7 @@ def my_unet(images,is_train,size, l2_reg):
     # self.labels = print_tensor(self.labels,'pool2')
     # 无论如何都要设置成True，否则没有batchnorm。最终测试输出不正确
     is_training =True
-
+    end_points =[]
     # 1, 1, 64
     conv1_1 =conv(images, filters=64, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     conv1_2 = conv(conv1_1, filters=64, l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
@@ -124,4 +124,4 @@ def my_unet(images,is_train,size, l2_reg):
     pred = conv(conv_up4_2, filters=num_classes, kernel_size=[1, 1], activation=tf.nn.sigmoid, batchnorm_istraining=is_training)
 
     # self.pred = print_tensor(self.pred,'pred')
-    return pred
+    return pred,end_points

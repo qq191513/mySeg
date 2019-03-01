@@ -40,7 +40,7 @@ def train_model():
         x = tf.placeholder(tf.float32, shape=input_shape)
         y = tf.placeholder(tf.float32, shape=labels_shape)
         # 构建网络和预测
-        prediction = model(images= x, is_train =is_train,size= input_shape,l2_reg =0.0001 )
+        prediction,end_points = model(images= x, is_train =is_train,size= input_shape,l2_reg =0.0001 )
         # 求loss
         the_loss = get_loss(choose_loss)
         loss = the_loss(y, prediction,labels_shape_vec)

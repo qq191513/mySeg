@@ -186,7 +186,7 @@ def my_segcap(images,is_train,size, l2_reg):
     start_s = 2
     atom = 16
     routing = 3
-
+    end_points =[]
 
     # 1  (128 -> 128)
 
@@ -258,4 +258,4 @@ def my_segcap(images,is_train,size, l2_reg):
     print('cap_out_8: {}'.format(cap_out_8.get_shape()))
     cap_out_9 = bn(cap_out_8, is_training)
     print('cap_out_9: {}'.format(cap_out_9.get_shape()))
-    return cap_out_9
+    return cap_out_9,end_points

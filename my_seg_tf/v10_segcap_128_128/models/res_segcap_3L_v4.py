@@ -189,7 +189,7 @@ def my_segcap(images,is_train,size, l2_reg):
     is_training =True
     start_s = 4
     keep_prob = 0.8
-
+    end_points =[]
     # 1  (128 -> 128)
     conv1 =conv(images, filters=8, kernel_size=[1, 1],l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     conv_prime = tf.expand_dims(conv1, axis=3)  # [N, H, W, t=1, z]
@@ -268,4 +268,4 @@ def my_segcap(images,is_train,size, l2_reg):
     # cap_out_4 = print_tensor(cap_out_4,'cap_out_4')
     cap_out_5 = bn(cap_out_4, is_training)
     # cap_out_5 = print_tensor(cap_out_5,'cap_out_5')
-    return cap_out_5
+    return cap_out_5,end_points

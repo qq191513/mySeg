@@ -186,7 +186,7 @@ def my_segcap(images,is_train,size, l2_reg):
     start_s = 2
     atom = 8
     routing = 3
-
+    end_points =[]
 
     # 1  (128 -> 128)
     conv1 =conv(images, filters=atom, kernel_size=[1,1],l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
@@ -232,4 +232,4 @@ def my_segcap(images,is_train,size, l2_reg):
     cap_out_6 =conv(cap_out_5, filters=128, kernel_size=[1,1],l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     cap_out_7 =conv(cap_out_6, filters=1, kernel_size=[1,1],l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
     cap_out_8 = bn(cap_out_7, is_training)
-    return cap_out_8
+    return cap_out_8,end_points
