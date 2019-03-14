@@ -29,8 +29,8 @@ test_opoch = 2
 ##########################   end   ##########################################
 #代码初始化
 session_config = dk.set_gpu()
-n_batch_train = int(train_data_number //batch_size)
 n_batch_test = int(test_data_number //batch_size)
+print('n_batch_test: ', n_batch_test)
 os.makedirs(save_plot_curve_dir,exist_ok=True)
 
 def evaluate_by_sklearn_model():
@@ -43,6 +43,8 @@ def evaluate_by_sklearn_model():
         # 构建网络
         prediction,end_points = model(images=x, is_train=True, size=input_shape, l2_reg=0.0001)
         prediction = tf.reshape(prediction, labels_shape)
+        # 打印模型结构
+        dk.print_model_struct(end_points)
         # 初始化变量
         coord, threads = dk.init_variables_and_start_thread(sess)
         # 恢复model

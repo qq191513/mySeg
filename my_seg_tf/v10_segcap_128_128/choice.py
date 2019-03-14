@@ -77,9 +77,9 @@
 ##############################      end    ######################################################
 
 ###############################  res_segcap_mini_v6 改这里    ######################################
-import config.config_res_segcap_mini_v6 as cfg
-from models.res_segcap_mini_v6 import my_segcap as model
-restore_model = True
+# import config.config_res_segcap_mini_v6 as cfg
+# from models.res_segcap_mini_v6 import my_segcap as model
+# restore_model = True
 ##############################      end    ######################################################
 
 ###############################  res_segcap_mini_v7 改这里    ######################################
@@ -88,6 +88,11 @@ restore_model = True
 # restore_model = False
 ##############################      end    ######################################################
 
+###############################  res_segcap_mini_v8 改这里    ######################################
+import config.config_res_segcap_mini_v8 as cfg
+from models.res_segcap_mini_v8 import my_segcap as model
+restore_model = False
+##############################      end    ######################################################
 
 
 

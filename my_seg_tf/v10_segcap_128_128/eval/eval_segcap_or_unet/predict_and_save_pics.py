@@ -30,10 +30,8 @@ test_opoch = 2
 ##########################   end   ##########################################
 #代码初始化
 session_config = dk.set_gpu()
-n_batch_train = int(train_data_number //batch_size)
 n_batch_test = int(test_data_number //batch_size)
 os.makedirs(predict_pics_save,exist_ok=True)
-
 
 def predict_and_save_pics_model():
     with tf.Session(config=session_config) as sess:
@@ -44,6 +42,8 @@ def predict_and_save_pics_model():
         y = tf.placeholder(tf.float32, shape=labels_shape)
         # 构建网络
         prediction,end_points = model(images=x, is_train=is_train, size=input_shape, l2_reg=0.0001)
+        # 打印模型结构
+        dk.print_model_struct(end_points)
         # prediction = tf.reshape(prediction, labels_shape)
         # 初始化变量
         coord, threads = dk.init_variables_and_start_thread(sess)

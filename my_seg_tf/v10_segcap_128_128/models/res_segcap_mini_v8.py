@@ -4,11 +4,9 @@ from choice import cfg
 
 import tensorflow as tf
 num_classes = cfg.num_classes
-from tools.development_kit import print_tensor
 
 
-# mini u型 两层 减少神经元 32减少到8
-
+#在成功的v2基础上整理代码
 
 def bn(inputs, is_training):
     normalized = tf.layers.batch_normalization(
@@ -89,24 +87,22 @@ def conv2d_transpose(x, channel, kernel, stride=1, padding="SAME",batchnorm_istr
     return dconv
 
 def squash(p):
-    # p = print_tensor(p, 'p')
     square_value = tf.square(p)
     # square_value = print_tensor(square_value, 'square_value')
     p_norm_sq = tf.reduce_sum(square_value, axis=-1, keep_dims=True)
     # p_norm_sq = print_tensor(p_norm_sq, 'p_norm_sq')
     p_norm = tf.sqrt(p_norm_sq + 1e-9)
+    sqrt_p_norm = tf.sqrt(p_norm + 1e-9)
     # p_norm = print_tensor(p_norm, 'p_norm')
-    v = p_norm_sq / (p_norm + p_norm_sq) * p / p_norm
+    v = p_norm_sq / (sqrt_p_norm + p_norm_sq) * p / p_norm + 0.000001
     # v = print_tensor(v, 'v')
-    # v = p_norm_sq / (1 + p_norm_sq) * p / p_norm
-
 
     return v
 
 def compute_vector_length(x):
     return tf.sqrt(tf.reduce_sum(tf.square(x), axis=-1, keep_dims=True) + 1e-9)
 
-def capsule(u, op, k, s, t, z, routing,bn=True):
+def capsule(u, op, k, s, t, z, routing):
     t_1, z_1 = t, z
 
     shape = u.get_shape() #tf.shape(u)
@@ -118,10 +114,10 @@ def capsule(u, op, k, s, t, z, routing,bn=True):
     u_hat_t_list = []
     for u_t in u_t_list: # u_t: [N, H_0, W_0, z_0]
       if op == "conv":
-        u_hat_t = conv2d(u_t, t_1*z_1, k, s,batchnorm_istraining=bn)
+        u_hat_t = conv2d(u_t, t_1*z_1, k, s,batchnorm_istraining=True)
       elif op == "deconv":
         # u_t = print_tensor(u_t, 'deconv u_t')
-        u_hat_t = conv2d_transpose(u_t, t_1*z_1, k, s,batchnorm_istraining=bn)
+        u_hat_t = conv2d_transpose(u_t, t_1*z_1, k, s,batchnorm_istraining=True)
         # u_hat_t = print_tensor(u_hat_t, 'deconv u_hat_t')
 
       else:
@@ -160,7 +156,7 @@ def capsule(u, op, k, s, t, z, routing,bn=True):
 
       p = tf.add_n(r_t_mul_u_hat_t_list) # [N, H_1, W_1, t_1, z_1]
       # p = print_tensor(p, 'p')
-
+      v = squash(p)
       # v = print_tensor(v, 'v')
 
       if d < routing - 1:
@@ -169,9 +165,9 @@ def capsule(u, op, k, s, t, z, routing,bn=True):
           # b_t     : [N, H_1, W_1, t_1]
           # u_hat_t : [N, H_1, W_1, t_1, z_1]
           # v       : [N, H_1, W_1, t_1, z_1]
-          b_t_list_.append(b_t + tf.reduce_sum(u_hat_t * p, axis=4))
+          b_t_list_.append(b_t + tf.reduce_sum(u_hat_t * v, axis=4))
         b_t_list = b_t_list_
-    v = squash(p)
+
     # v = print_tensor(v, 'final v')
     return v
 
@@ -179,94 +175,91 @@ def capsule(u, op, k, s, t, z, routing,bn=True):
 def residual_cap_block(input,routing,batchnorm_istraining=None):
     shape = input.shape
     [N, H, W, t , z] =shape
-    cap_1 = capsule(input, "conv", k=3, s=1, t=t, z=z, routing=routing,bn=False)
-    cap_2 = capsule(cap_1, "conv", k=3, s=1, t=t, z=z, routing=routing,bn=True)
+    cap_1 = capsule(input, "conv", k=3, s=1, t=t, z=z, routing=routing)
+    cap_2 = capsule(cap_1, "conv", k=3, s=1, t=t, z=z, routing=routing)
+
     residul = input +cap_2
-
+    residul = tf.nn.relu(residul)
     return residul
-
+from collections import OrderedDict
 def my_segcap(images,is_train,size, l2_reg):
     is_training =True
-    start_s = 4
-    keep_prob = 0.8
-    end_points =[]
-    atom = 8
-    # 1  (128 -> 128)
-    conv1 =conv(images, filters=8, kernel_size=[1, 1],l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
-    conv_prime = tf.expand_dims(conv1, axis=3)  # [N, H, W, t=1, z]
-    # conv_prime = print_tensor(conv_prime,'conv_prime')
+    start_s = 2
+    atom = 16
+    routing = 3
+    end_points =OrderedDict()
 
+    # 1  (128 -> 128)
+    conv1 =conv(images, filters=atom, kernel_size=[1,1],l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
+    conv_prime = tf.expand_dims(conv1, axis=3)  # [N, H, W, t=1, z]
+
+    skip1 = conv_prime
     # 1/2  (128 -> 64)
     multiple = 1
-    cap1_1 = capsule(conv_prime, "conv", k=3, s=1, t=start_s*multiple, z=atom, routing=3,bn=True)
-    cap1_2 = residual_cap_block(cap1_1,routing=3)
-    # cap1_1 = print_tensor(cap1_1,'cap1_1')
-    cap1_3 = capsule(cap1_2, "conv", k=3, s=2, t=start_s*multiple, z=atom, routing=3,bn=True)
-    # cap1_2 = print_tensor(cap1_2,'cap1_2')
-    skip1 = cap1_2
+    cap1_1 = residual_cap_block(conv_prime,routing=routing)
+    cap1_2 = capsule(cap1_1, "conv", k=3, s=2, t=start_s*multiple, z=atom, routing=routing)
+    skip2 = cap1_1
 
     # 1/4  (64 -> 32)
     multiple = 2
-    cap2_1 = capsule(cap1_3, "conv", k=3, s=1, t=start_s*multiple, z=atom, routing=3,bn=True)
-    cap2_2 = residual_cap_block(cap2_1,routing=3)
-    # cap2_1 = print_tensor(cap2_1,'cap2_1')
-    cap2_3 = capsule(cap2_2, "conv", k=3, s=2, t=start_s*multiple, z=atom, routing=3,bn=True)
-    # cap2_2 = print_tensor(cap2_2,'cap2_2')
-    skip2 = cap2_2
-    # skip2 = print_tensor(skip2,'skip2')
-
-    # 1/8  (32 -> 16)
-    multiple = 4
-    cap3_1 = capsule(cap2_3, "conv", k=3, s=1, t=start_s*multiple, z=atom, routing=3,bn=True)
-    cap3_2 = residual_cap_block(cap3_1,routing=3,batchnorm_istraining=True)
-    cap3_3 = capsule(cap3_2, "conv", k=3, s=2, t=start_s*multiple, z=atom, routing=3,bn=True)
-    skip3 = cap3_2
+    cap2_1 = residual_cap_block(cap1_2,routing=routing)
+    cap2_2 = capsule(cap2_1, "conv", k=3, s=2, t=start_s*multiple, z=atom, routing=routing)
+    skip3 = cap2_1
 
     #middle  (16 -> 16)
-    # multiple = 4
-    # cap_m_1 = capsule(cap2_2, "conv", k=3, s=1, t=start_s*multiple, z=atom, routing=2)
-    # cap_m_1 = print_tensor(cap_m_1,'cap_m_1')
-    # cap_m_2 = capsule(cap3_2,"conv", k=3, s=1, t=start_s*multiple, z=atom, routing=2)
-    cap_m_1 = residual_cap_block(cap3_3,routing=3)
-    # cap_m_1 = print_tensor(cap_m_1,'cap_m_1')
-    cap_m_2 = residual_cap_block(cap_m_1,routing=3)
-    # cap_m_2 = print_tensor(cap_m_2,'cap_m_2')
-
-    # 1/8  (16 -> 32)
-    multiple = 4
-    u_cap1_1 = capsule(cap_m_2, "deconv", k=3, s=2, t=start_s*multiple, z=atom, routing=3,bn=True)
-    u_cap_concat_1 = tf.concat([u_cap1_1, skip3], axis=3)
-    # u_cap1_2 = capsule(u_cap_concat_1, "conv", k=3, s=1, t=start_s*multiple, z=atom, routing=2)
-    # u_cap1_3 = capsule(u_cap1_2, "conv", k=3, s=1, t=start_s*multiple, z=atom, routing=2)
-    u_cap1_2 = residual_cap_block(u_cap_concat_1,routing=3,batchnorm_istraining=True)
+    cap_m_1 = residual_cap_block(cap2_2,routing=routing)
+    cap_m_2 = residual_cap_block(cap_m_1,routing=routing)
 
     # 1/4  (32 -> 64)
     multiple = 2
-    u_cap2_1 = capsule(u_cap1_2, "deconv", k=3, s=2, t=start_s*multiple, z=atom, routing=3,bn=True)
-    # u_cap2_1 = print_tensor(u_cap2_1, 'u_cap2_1')
-    u_cap_concat_2 = tf.concat([u_cap2_1, skip2], axis=3)
-    # u_cap_concat_2 = print_tensor(u_cap_concat_2, 'u_cap_concat_2')
-    u_cap2_3 = residual_cap_block(u_cap_concat_2,routing=3)
-    # u_cap2_3 = print_tensor(u_cap2_3, 'u_cap2_3')
+    u_cap2_1 = capsule(cap_m_2, "deconv", k=3, s=2, t=start_s*multiple, z=atom, routing=routing)
+    u_cap_concat_2 = tf.concat([u_cap2_1, skip3], axis=3)
+    u_cap2_3 = residual_cap_block(u_cap_concat_2,routing=routing)
+
     # 1/2  (64 -> 128)
     multiple = 1
-    u_cap3_1 = capsule(u_cap2_3, "deconv", k=3, s=2, t=start_s*multiple, z=atom, routing=3,bn=True)
-    # u_cap3_1 = print_tensor(u_cap3_1, 'u_cap3_1')
-    u_cap_concat_3 = tf.concat([u_cap3_1, skip1], axis=3)
-    # u_cap_concat_3 = print_tensor(u_cap_concat_3, 'u_cap_concat_3')
-    # u_cap3_2 = capsule(u_cap_concat_3, "conv", k=3, s=1, t=start_s*multiple, z=atom, routing=2,bn=True)
-    u_cap3_2 = residual_cap_block(u_cap_concat_3,routing=3)
-    # u_cap3_2 = print_tensor(u_cap3_2,'u_cap3_2')
+    u_cap3_1 = capsule(u_cap2_3, "deconv", k=3, s=2, t=start_s*multiple, z=atom, routing=routing)
+    u_cap_concat_3 = tf.concat([u_cap3_1, skip2], axis=3)
+    u_cap3_2 = capsule(u_cap_concat_3, "conv", k=3, s=1, t=start_s*multiple, z=atom*4, routing=routing)
+    u_cap3_3 = residual_cap_block(u_cap3_2,routing=routing)
+    u_cap3_4 = residual_cap_block(u_cap3_3,routing=routing)
+    u_cap3_5 = capsule(u_cap3_4, "conv", k=3, s=1, t=1, z=atom, routing=routing)
+    # u_cap3_5_l_list =tf.split(u_cap3_5,num_or_size_splits=atom,axis=4)
+    # u_cap3_5_l_add = tf.add_n(u_cap3_5_l_list)
+    # predict = tf.squeeze(u_cap3_5_l_add, axis=[4])
+    predict = tf.norm(u_cap3_5,axis=-1)
+    predict = bn(predict, is_training)
+    # tf.squeeze()
 
-    # 1   (128 -> 128)
-    # cap_out_1 = capsule(u_cap3_2, "conv", k=3, s=1, t=start_s*multiple, z=atom, routing=2,bn=True)
-    # cap_out_2 = capsule(cap_out_1, "conv", k=3, s=1, t=1, z=1, routing=2)
-    cap_out_1 = residual_cap_block(u_cap3_2,routing=3)
-    # cap_out_1 = print_tensor(cap_out_1,'cap_out_1')
-    # cap_out_2 = residual_cap_block(cap_out_1,routing=2,batchnorm_istraining=True)
-    cap_out_3 = capsule(cap_out_1, "conv", k=3, s=1, t=1, z=1, routing=3,bn=True)
-    cap_out_4 = tf.squeeze(cap_out_3, axis=3)
-    # cap_out_4 = print_tensor(cap_out_4,'cap_out_4')
-    cap_out_5 = bn(cap_out_4, is_training)
-    # cap_out_5 = print_tensor(cap_out_5,'cap_out_5')
-    return cap_out_5,end_points
+    # 1  (128 -> 128)
+    # u_cap_concat_4=cap_out_1
+    # [N, H_1, W_1, t_1, z_1] =u_cap_concat_4.get_shape()
+    # u_cap_concat_4 = tf.reshape(u_cap_concat_4, [N, H_1, W_1, 1,t_1* z_1])
+
+
+    #普通输出层
+    # cap_out_4 = tf.squeeze(u_cap_concat_4, axis=3)
+    # cap_out_7 =conv(cap_out_4, filters=24, kernel_size=[1,1],l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
+    # cap_out_8 =conv(cap_out_7, filters=1, kernel_size=[1,1],l2_reg_scale=l2_reg, batchnorm_istraining=is_training)
+    # cap_out_9 = bn(cap_out_8, is_training)
+
+    ################   end_points  ##########################
+    #用于输出可视化中间层
+    end_points['conv1'] = conv1           #Layer 1
+    end_points['cap1_1'] = cap1_1         #Layer 2
+    end_points['cap1_2'] = cap1_2         #Layer 3
+    end_points['cap2_1']=cap2_1         #Layer 4
+    end_points['cap2_2']=cap2_2         #Layer 5
+    end_points['cap_m_1']=cap_m_1       #Layer 6
+    end_points['cap_m_2']=cap_m_2       #Layer 7
+    end_points['u_cap2_1']=u_cap2_1     #Layer 8
+    end_points['u_cap2_3']=u_cap2_3     #Layer 9
+    end_points['u_cap3_1']=u_cap3_1     #Layer 10
+    end_points['u_cap3_2']=u_cap3_2     #Layer 11
+    end_points['u_cap3_3']=u_cap3_3   #Layer 12
+    end_points['u_cap3_4']=u_cap3_4   #Layer 13
+    end_points['u_cap3_5']=u_cap3_5   #Layer 14
+    end_points['predict']=predict   #Layer 15
+    ################     end       ###########################
+
+    return predict,end_points

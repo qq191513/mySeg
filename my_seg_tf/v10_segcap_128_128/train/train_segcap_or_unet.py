@@ -7,7 +7,7 @@ from tools.loss import get_loss
 from data_process.preprocess import augmentImages
 import time
 from data_process.use_seg_tfrecord import create_inputs_seg_hand as create_inputs
-
+from tensorflow.python import debug as tfdbg
 from choice import model
 from choice import restore_model
 from choice import cfg
@@ -25,22 +25,38 @@ logdir = cfg.logdir
 lr_range = cfg.lr_range
 choose_loss = cfg.choose_loss
 is_train =True
+use_tensoflow_debug=False
 ##############################      end    ########################################
 
 def train_model():
 
     # 代码初始化
     n_batch_train = int(train_data_number // batch_size)
+    print('n_batch_train: ', n_batch_train)
     os.makedirs(ckpt, exist_ok=True)
     session_config = dk.set_gpu()
+    latest_train_data = {}
+    latest_train_data['latest_min'] = [0,0,0,0,0,0]
+    latest_train_data['latest_max'] = [0,0,0,0,0,0]
+    latest_train_data['latest_mean'] = [0,0,0,0,0,0]
 
     with tf.Session(config = session_config) as sess:
+        #如果使用tensorlfow1的debug神器（主要用于查出哪里有inf或nan，不能在pycharm运行调试程序，只能在xshell里面运行）
+        if use_tensoflow_debug:
+            sess = tfdbg.LocalCLIDebugWrapperSession(sess)
+            sess.add_tensor_filter("has_inf_or_nan", tfdbg.has_inf_or_nan)
+            #然后在xshell里面运行run -f has_inf_or_nan
+            # 一旦inf / nan出现，界面现实所有包含此类病态数值的张量，按照时间排序。所以第一个就最有可能是最先出现inf / nan的节点。
+            # 可以用node_info, list_inputs等命令进一步查看节点的类型和输入，来发现问题的缘由。
+            #教程https://blog.csdn.net/tanmx219/article/details/82318133
         # 入口
         train_x, train_y = create_inputs(is_train)
         x = tf.placeholder(tf.float32, shape=input_shape)
         y = tf.placeholder(tf.float32, shape=labels_shape)
         # 构建网络和预测
-        prediction,end_points = model(images= x, is_train =is_train,size= input_shape,l2_reg =0.0001 )
+        prediction,endpoint = model(images= x, is_train =is_train,size= input_shape,l2_reg =0.0001 )
+        # 打印模型结构
+        dk.print_model_struct(endpoint)
         # 求loss
         the_loss = get_loss(choose_loss)
         loss = the_loss(y, prediction,labels_shape_vec)
@@ -83,7 +99,8 @@ def train_model():
 
             # 显示进度、耗时、最小最大平均值
             seconds_mean = (time.time() - since) / n_batch_train
-            dk.print_progress_and_time_massge(seconds_mean,step,total_step,dice_hard_value_list)
+            latest_train_data = dk.print_progress_and_time_massge(
+                seconds_mean,step,total_step,dice_hard_value_list,latest_train_data)
 
             # 保存model
             if (((epoch_n + 1) % save_epoch_n)) == 0:

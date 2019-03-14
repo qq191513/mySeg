@@ -81,6 +81,167 @@ progress: 28/2800---1.00%  time: 5.278 seconds/step min-max:0.000-0.802 mean:0.4
 
 
 #########################################################################################################################
+res_segcap_mini_v8.py
+poch_n=0 n_batch=27/27 loss=3.225 dice_hard=0.491
+progress: 28/2800---1.00%  time: 5.578 seconds/step min-max:0.229-0.865 mean:0.560
+progress: 56/2800---2.00%  time: 5.192 seconds/step min-max:0.325-0.818 mean:0.674
+progress: 84/2800---3.00%  time: 5.146 seconds/step min-max:0.571-0.861 mean:0.766
+progress: 112/2800---4.00%  time: 5.173 seconds/step min-max:0.502-0.868 mean:0.752
+progress: 140/2800---5.00%  time: 5.218 seconds/step min-max:0.523-0.868 mean:0.744
+progress: 168/2800---6.00%  time: 5.174 seconds/step min-max:0.461-0.904 mean:0.733
+
+progress: 28/1680---1.67%  time: 5.106 seconds/step min-max:0.089-0.729 mean:0.500
+progress: 56/1680---3.33%  time: 4.714 seconds/step min-max:0.157-0.851 mean:0.626
+progress: 84/1680---5.00%  time: 4.662 seconds/step min-max:0.146-0.862 mean:0.639
+progress: 112/1680---6.67%  time: 4.669 seconds/step min-max:0.329-0.881 mean:0.673
+progress: 140/1680---8.33%  time: 4.675 seconds/step min-max:0.338-0.841 mean:0.653
+progress: 168/1680---10.00%  time: 4.654 seconds/step min-max:0.287-0.874 mean:0.690
+progress: 196/1680---11.67%  time: 4.661 seconds/step min-max:0.247-0.824 mean:0.595
+
+progress: 28/1680---1.67%  time: 5.669 seconds/step min-max:0.000-0.747 mean:0.383
+progress: 56/1680---3.33%  time: 5.272 seconds/step min-max:0.341-0.839 mean:0.630
+progress: 84/1680---5.00%  time: 5.145 seconds/step min-max:0.358-0.803 mean:0.631
+progress: 112/1680---6.67%  time: 5.264 seconds/step min-max:0.116-0.824 mean:0.483
+progress: 140/1680---8.33%  time: 5.262 seconds/step min-max:0.212-0.657 mean:0.490
+progress: 168/1680---10.00%  time: 5.182 seconds/step min-max:0.373-0.656 mean:0.536
+
+60epoch
+mean:  OrderedDict([('AUC_ROC', 0.8702079874660553), ('AUC_prec_rec', 0.8654135269680301),
+('accuracy', 0.9792289733886719), ('specificity', 0.998138804226372), ('sensitivity', 0.7422771707057385),
+('precision', 0.9694992850857904), ('jaccard_index', 0.9792289733886719), ('F1_score', 0.8359289006353983)])
+
+
+
+
+progress: 28/1680---1.67%  time: 5.827 seconds/step min-max:0.000-0.453 mean:0.229
+progress: 56/1680---3.33%  time: 5.412 seconds/step min-max:0.318-0.704 mean:0.522
+progress: 84/1680---5.00%  time: 5.382 seconds/step min-max:0.371-0.717 mean:0.624
+progress: 112/1680---6.67%  time: 5.452 seconds/step min-max:0.396-0.733 mean:0.650
+
+#+0.05 +  16 atom + 尾端32 atom
+progress: 28/1680---1.67%  time: 6.406 seconds/step min-max:0.000-0.468 mean:0.225
+progress: 56/1680---3.33%  time: 6.024 seconds/step min-max:0.100-0.555 mean:0.384
+progress: 84/1680---5.00%  time: 6.069 seconds/step min-max:0.305-0.726 mean:0.524
+progress: 112/1680---6.67%  time: 5.894 seconds/step min-max:0.071-0.581 mean:0.450
+progress: 140/1680---8.33%  time: 6.018 seconds/step min-max:0.284-0.555 mean:0.469
+progress: 168/1680---10.00%  time: 5.825 seconds/step min-max:0.260-0.542 mean:0.428
+progress: 196/1680---11.67%  time: 5.892 seconds/step min-max:0.276-0.500 mean:0.416
+
+#+0.05 +relu +  16 atom+尾端32 atom
+progress: 28/1680---1.67%  time: 6.305 seconds/step min-max:0.000-0.563 mean:0.184
+progress: 56/1680---3.33%  time: 5.910 seconds/step min-max:0.112-0.588 mean:0.469
+progress: 84/1680---5.00%  time: 5.988 seconds/step min-max:0.335-0.604 mean:0.516
+progress: 112/1680---6.67%  time: 5.890 seconds/step min-max:0.313-0.615 mean:0.504
+progress: 140/1680---8.33%  time: 6.015 seconds/step min-max:0.357-0.605 mean:0.529
+
+#+0.05 +relu+最后输出BN +  16 atom+尾端32 atom
+epoch_n=0 n_batch=27/27 loss=3.984 dice_hard=0.473
+progress: 28/1680---1.67%  time: 6.335 seconds/step min-max:0.000-0.522 mean:0.206
+progress: 56/1680---3.33%  time: 5.934 seconds/step min-max:0.030-0.692 mean:0.411
+progress: 84/1680---5.00%  time: 5.999 seconds/step min-max:0.204-0.697 mean:0.516
+progress: 112/1680---6.67%  time: 5.983 seconds/step min-max:0.330-0.648 mean:0.520
+
+#+0.5 +relu+最后输出BN +  16 atom+尾端32 atom
+progress: 28/1680---1.67%  time: 6.446 seconds/step min-max:0.000-0.152 mean:0.070
+#+0.5 +relu+
+epoch_n=0 n_batch=24/27 loss=96.106 dice_hard=0.131
+
+#+0.1 +relu+最后输出BN +  16 atom+尾端32 atom
+progress: 28/1680---1.67%  time: 6.543 seconds/step min-max:0.001-0.651 mean:0.266
+progress: 56/1680---3.33%  time: 6.033 seconds/step min-max:0.287-0.667 mean:0.464
+progress: 84/1680---5.00%  time: 6.053 seconds/step min-max:0.006-0.669 mean:0.436
+
+progress: 28/1680---1.67%  time: 6.543 seconds/step min-max:0.001-0.651 mean:0.266
+progress: 56/1680---3.33%  time: 6.033 seconds/step min-max:0.287-0.667 mean:0.464
+progress: 84/1680---5.00%  time: 6.053 seconds/step min-max:0.006-0.669 mean:0.436
+progress: 112/1680---6.67%  time: 5.999 seconds/step min-max:0.041-0.571 mean:0.377
+
+
++ 0.01 +relu+最后输出BN +  16 atom+尾端32 atom
+progress: 28/1680---1.67%  time: 6.055 seconds/step min-max:0.000-0.840 mean:0.548
+progress: 56/1680---3.33%  time: 5.456 seconds/step min-max:0.452-0.878 mean:0.724
+progress: 84/1680---5.00%  time: 5.545 seconds/step min-max:0.001-0.857 mean:0.525
+progress: 112/1680---6.67%  time: 5.481 seconds/step min-max:0.294-0.902 mean:0.752
+progress: 140/1680---8.33%  time: 5.478 seconds/step min-max:0.386-0.912 mean:0.788
+progress: 168/1680---10.00%  time: 5.603 seconds/step min-max:0.547-0.906 mean:0.798
+
+
+
++ 0.001 +relu+最后输出BN +  16 atom+尾端32 atom
+progress: 28/1680---1.67%  time: 6.477 seconds/step min-max:0.000-0.635 mean:0.267
+progress: 56/1680---3.33%  time: 5.937 seconds/step min-max:0.000-0.850 mean:0.389
+progress: 84/1680---5.00%  time: 5.841 seconds/step min-max:0.103-0.859 mean:0.565
+
+
+
++ 0.0001 +relu+最后输出BN +  16 atom+尾端32 atom
+progress: 28/1680---1.67%  time: 5.914 seconds/step min-max:0.000-0.900 mean:0.435
+progress: 56/1680---3.33%  time: 5.544 seconds/step min-max:0.063-0.923 mean:0.704
+progress: 84/1680---5.00%  time: 5.535 seconds/step min-max:0.352-0.929 mean:0.801
+
++ 0.000001 +relu+最后输出BN +  16 atom  + 尾端32 atom
+progress: 28/1680---1.67%  time: 6.160 seconds/step min-max:0.000-0.513 mean:0.087
+progress: 56/1680---3.33%  time: 5.693 seconds/step min-max:0.000-0.756 mean:0.320
+progress: 1428/1680---85.00%  time: 4.530 seconds/step min-max:0.594-0.956 mean:0.895
+progress: 1456/1680---86.67%  time: 4.995 seconds/step min-max:0.620-0.961 mean:0.898
+progress: 1484/1680---88.33%  time: 4.438 seconds/step min-max:0.612-0.958 mean:0.908
+progress: 1512/1680---90.00%  time: 4.453 seconds/step min-max:0.639-0.959 mean:0.907
+
+progress: 28/5600---0.50%  time: 4.742 seconds/step min-max:0.000-0.811 mean:0.426
+progress: 56/5600---1.00%  time: 4.310 seconds/step min-max:0.455-0.907 mean:0.727
+progress: 84/5600---1.50%  time: 4.306 seconds/step min-max:0.077-0.944 mean:0.706
+progress: 112/5600---2.00%  time: 4.372 seconds/step min-max:0.435-0.918 mean:0.830
+progress: 140/5600---2.50%  time: 4.356 seconds/step min-max:0.001-0.930 mean:0.648
+progress: 168/5600---3.00%  time: 4.377 seconds/step min-max:0.022-0.919 mean:0.766
+
+
+mean:  OrderedDict([('AUC_ROC', 0.8715496494630297), ('AUC_prec_rec', 0.8205361705481257),
+ ('accuracy', 0.9766845703125), ('specificity', 0.993084840573757), ('sensitivity', 0.7500144583523025),
+ ('precision', 0.8741473297654332), ('jaccard_index', 0.9766845703125), ('F1_score', 0.7931146454819783)])
+
+0.0001 + relu + 最后输出BN  + 32 atom   @@@@@@@@@@@@@@@@@@@@@@@@@
+progress: 28/1680---1.67%  time: 6.746 seconds/step min-max:0.000-0.873 mean:0.445
+progress: 56/1680---3.33%  time: 6.348 seconds/step min-max:0.000-0.900 mean:0.605
+progress: 84/1680---5.00%  time: 6.394 seconds/step min-max:0.093-0.931 mean:0.736
+progress: 112/1680---6.67%  time: 6.496 seconds/step min-max:0.581-0.918 mean:0.838
+progress: 140/1680---8.33%  time: 6.327 seconds/step min-max:0.000-0.918 mean:0.686
+progress: 168/1680---10.00%  time: 6.386 seconds/step min-max:0.508-0.932 mean:0.798
+
+0.000001 + relu + 最后输出BN  +  32 atom
+progress: 28/5600---0.50%  time: 6.889 seconds/step min-max:0.000-0.749 mean:0.255
+progress: 56/5600---1.00%  time: 6.454 seconds/step min-max:0.047-0.803 mean:0.531
+progress: 84/5600---1.50%  time: 6.496 seconds/step min-max:0.423-0.890 mean:0.694
+progress: 112/5600---2.00%  time: 6.493 seconds/step min-max:0.000-0.888 mean:0.689
+
+0.000001 + relu + 最后输出BN  +  32 atom
+progress: 28/5600---0.50%  time: 6.774 seconds/step min-max:0.000-0.750 mean:0.207
+progress: 56/5600---1.00%  time: 6.370 seconds/step min-max:0.117-0.839 mean:0.602
+progress: 84/5600---1.50%  time: 6.339 seconds/step min-max:0.000-0.881 mean:0.597
+progress: 112/5600---2.00%  time: 6.361 seconds/step min-max:0.000-0.912 mean:0.637
+progress: 140/5600---2.50%  time: 6.375 seconds/step min-max:0.331-0.889 mean:0.733
+progress: 168/5600---3.00%  time: 6.364 seconds/step min-max:0.351-0.920 mean:0.782
+
+
++ 0.000001 +relu+最后输出BN +  16 atom  + 尾端64 atom
+progress: 28/5600---0.50%  time: 6.357 seconds/step min-max:0.002-0.846 mean:0.582
+progress: 56/5600---1.00%  time: 5.931 seconds/step min-max:0.265-0.895 mean:0.742
+progress: 84/5600---1.50%  time: 5.915 seconds/step min-max:0.249-0.912 mean:0.694
+progress: 112/5600---2.00%  time: 5.892 seconds/step min-max:0.005-0.919 mean:0.682
+progress: 140/5600---2.50%  time: 5.894 seconds/step min-max:0.456-0.892 mean:0.744
+progress: 168/5600---3.00%  time: 5.860 seconds/step min-max:0.316-0.924 mean:0.745
+progress: 1988/5600---35.50%  time: 5.925 seconds/step min-max:0.315-0.956 mean:0.886
+progress: 2016/5600---36.00%  time: 5.878 seconds/step min-max:0.613-0.958 mean:0.896
+progress: 2044/5600---36.50%  time: 5.900 seconds/step min-max:0.623-0.957 mean:0.905
+progress: 2072/5600---37.00%  time: 5.957 seconds/step min-max:0.628-0.959 mean:0.904
+progress: 2100/5600---37.50%  time: 6.060 seconds/step min-max:0.597-0.955 mean:0.903
+progress: 2128/5600---38.00%  time: 5.898 seconds/step min-max:0.618-0.959 mean:0.909
+
+
+
+
++ 0.000001 +relu+最后输出BN +  16 atom  + 尾端128 atom
+
+
 
 #########################################################################################################################
 

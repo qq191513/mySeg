@@ -56,13 +56,32 @@ def init_variables_and_start_thread(sess):
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
     return coord,threads
 
+def print_model_struct(endpoint):
+    if len(endpoint) == 0:
+        print('Endpoint is none!')
+        return None
+
+    print('####################  Model start!  ##########################')
+    for key, value in endpoint.items():
+        print("{}:{}".format(key, value.get_shape()))
+    print('####################  Model end!    ##########################')
 
 def restore_model(sess,ckpt,restore_model):
     # 3、恢复model，放在上面的全局初始化和启动数据线程函数之后
     """Set Saver."""
-    var_to_save = [v for v in tf.global_variables(
-    ) if 'Adam' not in v.name]  # Don't save redundant Adam beta/gamma
-    # var_to_save = [v for v in tf.global_variables()]
+    var_to_save = []
+    exclusition_list = [
+        'Adam'
+    ]
+    #run -f has_inf_or_nan
+    # var_list = tf.global_variables()
+    var_list = tf.trainable_variables()
+    for v in var_list:
+        #排除不要的东西
+        for exclusition in exclusition_list:
+            if exclusition not in v.name:  # Don't save redundant Adam beta/gamma
+                var_to_save.append(v)
+
     saver = tf.train.Saver(var_list=var_to_save, max_to_keep=5)
     start_epoch = 0
     if restore_model:
@@ -226,15 +245,53 @@ def print_effect_message(epoch_n,n_batch,n_batch_train,loss_value,dice_hard):
     # print(message)
 
 
-def print_progress_and_time_massge(seconds_mean,step,total_step,dice_hard_value_list):
+def print_progress_and_time_massge(seconds_mean,step,total_step,dice_hard_value_list,latest_train_data = []):
+    #求平均值，最大最小值
+    mean = np.mean(dice_hard_value_list)
+    max = np.max(dice_hard_value_list)
+    min = np.min(dice_hard_value_list)
+
+    #求最近6轮的后三轮之总和比前三轮之总和的平均值，最小最大值的变化（有无提升or下降）
+    latest_min = latest_train_data['min']
+    latest_max = latest_train_data['max']
+    latest_mean = latest_train_data['mean']
+
+    latest_min.pop(0)  #删除最旧的
+    latest_min.append(min) #保存最新的
+    change_min = (latest_min[3] + latest_min[4] + latest_min[5])- \
+                 (latest_min[0] + latest_min[1] + latest_min[2])
+    change_min = change_min/3
+
+    latest_max.pop(0) #删除最旧的
+    latest_max = latest_max.append(max) #保存最新的
+    change_max = (latest_max[3] + latest_max[4] + latest_max[5])- \
+                 (latest_max[0] + latest_max[1] + latest_max[2])
+    change_max = change_max/3
+
+    latest_mean.pop(0)  #删除最旧的
+    latest_mean.append(mean) #保存最新的
+    change_mean = (latest_mean[3] + latest_mean[4] + latest_mean[5])- \
+                 (latest_mean[0] + latest_mean[1] + latest_mean[2])
+    change_mean = change_mean/3
+
+    latest_train_data['min'] = latest_min
+    latest_train_data['max'] = latest_max
+    latest_train_data['mean'] = latest_mean
+
+
     # 显示进度、耗时、最小最大平均值
     print('')
     message_1 = 'progress: {}/{}---'.format(int(step),total_step)
     message_2 = '{:0.2f}%  '.format(step/total_step*100)
     message_3 = 'time: {:0.3f} seconds/step '.format(seconds_mean)
-    message_4 = 'min-max:{:0.3f}-{:0.3f} '.format(np.min(dice_hard_value_list),np.max(dice_hard_value_list))
-    message_5 = 'mean:{:0.3f} '.format(np.mean(dice_hard_value_list))
-    print(message_1 + message_2 + message_3 + message_4 + message_5)
+    message_4 = 'min-max:{:0.3f}-{:0.3f} '.format(min,max)
+    message_5 = 'mean:{:0.3f} '.format(mean)
+    message_6 = 'min-max change :{:0.3f}-{:0.3f} '.format(change_min,change_max)
+    message_7 = 'mean change:{:0.3f} '.format(change_mean)
+    print(message_1 + message_2 + message_3 + message_4 + message_5 + message_6 + message_7)
+
+
+    return latest_train_data
 
 def print_tensor(tensor,message=None):
 	if message is None:
