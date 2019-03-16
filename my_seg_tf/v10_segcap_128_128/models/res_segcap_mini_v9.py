@@ -219,7 +219,7 @@ def my_segcap(images,is_train,size, l2_reg):
     multiple = 1
     L10_u_cap3_1 = capsule(L9_u_cap2_3, "deconv", k=3, s=2, t=start_s*multiple, z=atom, routing=routing)
     u_cap_concat_3 = tf.concat([L10_u_cap3_1, skip1], axis=3)
-    L11_u_cap3_2 = capsule(u_cap_concat_3, "conv", k=3, s=1, t=start_s*multiple, z=atom*4, routing=routing)
+    L11_u_cap3_2 = capsule(u_cap_concat_3, "conv", k=3, s=1, t=start_s*multiple, z=atom*6, routing=routing)
     L12_u_cap3_3 = residual_cap_block(L11_u_cap3_2,routing=routing)
     L13_u_cap3_4 = residual_cap_block(L12_u_cap3_3,routing=routing)
     L14_u_cap3_5 = capsule(L13_u_cap3_4, "conv", k=3, s=1, t=1, z=atom, routing=routing)

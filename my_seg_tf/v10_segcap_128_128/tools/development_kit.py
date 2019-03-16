@@ -244,8 +244,11 @@ def print_effect_message(epoch_n,n_batch,n_batch_train,loss_value,dice_hard):
     #换行显示
     # print(message)
 
-
-def print_progress_and_time_massge(seconds_mean,step,total_step,dice_hard_value_list,latest_train_data = []):
+latest_train_data = {}
+latest_train_data['min'] = [0,0,0,0,0,0]
+latest_train_data['max'] = [0,0,0,0,0,0]
+latest_train_data['mean'] = [0,0,0,0,0,0]
+def print_progress_and_time_massge(seconds_mean,step,total_step,dice_hard_value_list):
     #求平均值，最大最小值
     mean = np.mean(dice_hard_value_list)
     max = np.max(dice_hard_value_list)
@@ -263,7 +266,7 @@ def print_progress_and_time_massge(seconds_mean,step,total_step,dice_hard_value_
     change_min = change_min/3
 
     latest_max.pop(0) #删除最旧的
-    latest_max = latest_max.append(max) #保存最新的
+    latest_max.append(max) #保存最新的
     change_max = (latest_max[3] + latest_max[4] + latest_max[5])- \
                  (latest_max[0] + latest_max[1] + latest_max[2])
     change_max = change_max/3
@@ -286,12 +289,14 @@ def print_progress_and_time_massge(seconds_mean,step,total_step,dice_hard_value_
     message_3 = 'time: {:0.3f} seconds/step '.format(seconds_mean)
     message_4 = 'min-max:{:0.3f}-{:0.3f} '.format(min,max)
     message_5 = 'mean:{:0.3f} '.format(mean)
-    message_6 = 'min-max change :{:0.3f}-{:0.3f} '.format(change_min,change_max)
-    message_7 = 'mean change:{:0.3f} '.format(change_mean)
-    print(message_1 + message_2 + message_3 + message_4 + message_5 + message_6 + message_7)
+    message_6 = 'change-min-max:({:0.3f})-({:0.3f}) '.format(change_min,change_max)
+    message_7 = 'change-mean:{:0.3f} '.format(change_mean)
+    if latest_min[0]==0 & latest_max[0]==0:
+        message_all = message_1 + message_2 + message_3 + message_4 + message_5
+    else:
+        message_all = message_1 + message_2 + message_3 + message_4 + message_5 + message_6 + message_7
+    print(message_all)
 
-
-    return latest_train_data
 
 def print_tensor(tensor,message=None):
 	if message is None:

@@ -35,10 +35,7 @@ def train_model():
     print('n_batch_train: ', n_batch_train)
     os.makedirs(ckpt, exist_ok=True)
     session_config = dk.set_gpu()
-    latest_train_data = {}
-    latest_train_data['latest_min'] = [0,0,0,0,0,0]
-    latest_train_data['latest_max'] = [0,0,0,0,0,0]
-    latest_train_data['latest_mean'] = [0,0,0,0,0,0]
+
 
     with tf.Session(config = session_config) as sess:
         #如果使用tensorlfow1的debug神器（主要用于查出哪里有inf或nan，不能在pycharm运行调试程序，只能在xshell里面运行）
@@ -99,8 +96,8 @@ def train_model():
 
             # 显示进度、耗时、最小最大平均值
             seconds_mean = (time.time() - since) / n_batch_train
-            latest_train_data = dk.print_progress_and_time_massge(
-                seconds_mean,step,total_step,dice_hard_value_list,latest_train_data)
+            dk.print_progress_and_time_massge(
+                seconds_mean,step,total_step,dice_hard_value_list)
 
             # 保存model
             if (((epoch_n + 1) % save_epoch_n)) == 0:
