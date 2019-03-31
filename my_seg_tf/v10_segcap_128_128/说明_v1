@@ -222,6 +222,7 @@ progress: 140/5600---2.50%  time: 6.375 seconds/step min-max:0.331-0.889 mean:0.
 progress: 168/5600---3.00%  time: 6.364 seconds/step min-max:0.351-0.920 mean:0.782
 
 
+
 + 0.000001 +relu+最后输出BN +  16 atom  + 尾端64 atom
 progress: 28/5600---0.50%  time: 6.357 seconds/step min-max:0.002-0.846 mean:0.582
 progress: 56/5600---1.00%  time: 5.931 seconds/step min-max:0.265-0.895 mean:0.742
@@ -236,13 +237,36 @@ progress: 2072/5600---37.00%  time: 5.957 seconds/step min-max:0.628-0.959 mean:
 progress: 2100/5600---37.50%  time: 6.060 seconds/step min-max:0.597-0.955 mean:0.903
 progress: 2128/5600---38.00%  time: 5.898 seconds/step min-max:0.618-0.959 mean:0.909
 
+res_segcap_mini_v9.py
++ 0.000001 +relu+最后输出BN +  16 atom  + 尾端96 atom
+progress: 28/5600---0.50%  time: 5.581 seconds/step min-max:0.000-0.640 mean:0.250
+progress: 56/5600---1.00%  time: 5.474 seconds/step min-max:0.352-0.687 mean:0.566
+progress: 84/5600---1.50%  time: 5.478 seconds/step min-max:0.348-0.726 mean:0.612
+progress: 112/5600---2.00%  time: 5.483 seconds/step min-max:0.381-0.727 mean:0.628
+progress: 140/5600---2.50%  time: 5.468 seconds/step min-max:0.432-0.717 mean:0.627
+
+res_segcap_mini_v9.py
++ 1/atom  + relu+最后输出BN +  16 atom  + 尾端64 atom
+progress: 28/5600---0.50%  time: 3.842 seconds/step min-max:0.002-0.297 mean:0.137
+progress: 56/5600---1.00%  time: 3.727 seconds/step min-max:0.099-0.299 mean:0.187
+progress: 84/5600---1.50%  time: 3.713 seconds/step min-max:0.107-0.357 mean:0.218
+progress: 112/5600---2.00%  time: 3.733 seconds/step min-max:0.159-0.424 mean:0.305
+progress: 140/5600---2.50%  time: 3.717 seconds/step min-max:0.271-0.546 mean:0.394
+progress: 168/5600---3.00%  time: 3.729 seconds/step min-max:0.216-0.598 mean:0.413 change-min-max:(0.146)-(0.205) change-mean:0.190
+progress: 196/5600---3.50%  time: 3.735 seconds/step min-max:0.320-0.592 mean:0.445 change-min-max:(0.147)-(0.219) change-mean:0.181
+progress: 224/5600---4.00%  time: 3.736 seconds/step min-max:0.359-0.620 mean:0.531 change-min-max:(0.119)-(0.161) change-mean:0.158
+progress: 252/5600---4.50%  time: 3.732 seconds/step min-max:0.364-0.600 mean:0.510 change-min-max:(0.132)-(0.081) change-mean:0.125
+progress: 280/5600---5.00%  time: 3.728 seconds/step min-max:0.421-0.667 mean:0.589 change-min-max:(0.113)-(0.050) change-mean:0.126
 
 
-
-+ 0.000001 +relu+最后输出BN +  16 atom  + 尾端128 atom
-
-
-
++  1/z_0/10 + relu+最后输出BN +  16 atom  + 尾端64 atom
+progress: 28/5600---0.50%  time: 3.858 seconds/step min-max:0.000-0.537 mean:0.158
+progress: 56/5600---1.00%  time: 3.716 seconds/step min-max:0.151-0.681 mean:0.425
+progress: 84/5600---1.50%  time: 3.707 seconds/step min-max:0.406-0.771 mean:0.637
+progress: 112/5600---2.00%  time: 3.713 seconds/step min-max:0.342-0.829 mean:0.723
+progress: 140/5600---2.50%  time: 3.717 seconds/step min-max:0.214-0.692 mean:0.457
+progress: 168/5600---3.00%  time: 3.722 seconds/step min-max:0.384-0.620 mean:0.550 change-min-max:(0.128)-(0.051) change-mean:0.170
+progress: 196/5600---3.50%  time: 3.728 seconds/step min-max:0.366-0.681 mean:0.587 change-min-max:(0.022)-(-0.096) change-mean:-0.064
 #########################################################################################################################
 
 #########################################################################################################################

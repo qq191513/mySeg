@@ -291,7 +291,7 @@ def print_progress_and_time_massge(seconds_mean,step,total_step,dice_hard_value_
     message_5 = 'mean:{:0.3f} '.format(mean)
     message_6 = 'change-min-max:({:0.3f})-({:0.3f}) '.format(change_min,change_max)
     message_7 = 'change-mean:{:0.3f} '.format(change_mean)
-    if latest_min[0]==0 & latest_max[0]==0:
+    if latest_min[0]==0 and latest_max[0]==0:
         message_all = message_1 + message_2 + message_3 + message_4 + message_5
     else:
         message_all = message_1 + message_2 + message_3 + message_4 + message_5 + message_6 + message_7

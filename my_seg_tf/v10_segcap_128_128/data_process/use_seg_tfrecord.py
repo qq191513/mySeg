@@ -28,9 +28,15 @@ shuffle_batch =True
 #否则会爆出OutOfRangeError的错误（意思是消费量高于产出量）
 epoch = cfg.epoch
 
-#显示方式
+#cv2的显示方式和图像保存
 cv2_show = False  # 用opencv显示或plt显示
+cv2_save_pic = True
+# plt的图像保存
+plt_save_pic = True
+epoch = cfg.epoch
+ckpt=cfg.ckpt
 #######################     end     ############################################
+
 
 def int64_feature(values):
   if not isinstance(values, (tuple, list)):
@@ -99,14 +105,17 @@ def feed_data_method(image,mask):
             allow_smaller_final_batch=False)
     return images,masks
 
-def plt_imshow_data(data):
+def plt_imshow_data(data,save_name=None):
     #调成标准格式和标准维度，免得爆BUG
     data = np.asarray(data)
     if data.ndim == 3:
         if data.shape[2] == 1:
             data = data[:, :, 0]
     plt.imshow(data)
+    if save_name is not None:
+        plt.savefig(save_name)
     plt.show()
+
 
 def plt_imshow_two_pics(data_1,data_2):
     #调成标准格式和标准维度，免得爆BUG
@@ -204,7 +213,11 @@ if  __name__== '__main__':
         tf.local_variables_initializer().run()
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(sess=sess, coord=coord)
-
+        index = 0
+        #创建图像增强保存文件夹
+        save_pic_dir = ckpt
+        save_pic_dir = os.path.join(save_pic_dir,'augmentImages_save')
+        os.makedirs(save_pic_dir,exist_ok=True)
         # 输出100个batch观察
         for i in range(100):
             batch_size_n = 1  #观察batch_size的第n张图片
@@ -222,12 +235,18 @@ if  __name__== '__main__':
             pics_mask = np.squeeze(pics_mask,axis=0)  # 去掉维度是1的维度，四维变成三维
             pics_mask = cv2.cvtColor(pics_mask, cv2.COLOR_GRAY2BGR)  # 一通道转三通道
             hstack = np.hstack((pic, pics_mask))  # 水平拼接
+            index += 1
+
             if cv2_show:
                 cv2.imshow('img and mask', hstack)
                 cv2.waitKey(2000)
                 cv2.destroyAllWindows()
             else:
-                plt_imshow_data(hstack)
+                if plt_save_pic:
+                    save_pic_name = '{}.png'.format(index)
+                    save_pic_name = os.path.join(save_pic_dir,'' ,save_pic_name)
+                    print(save_pic_name)
+                plt_imshow_data(hstack,save_name = save_pic_name)
                 time.sleep(2)
 
         coord.request_stop()

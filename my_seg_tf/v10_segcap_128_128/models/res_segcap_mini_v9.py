@@ -86,7 +86,7 @@ def conv2d_transpose(x, channel, kernel, stride=1, padding="SAME",batchnorm_istr
         dconv = bn(dconv, batchnorm_istraining)
     return dconv
 
-def squash(p):
+def squash(p,z_0):
     square_value = tf.square(p)
     # square_value = print_tensor(square_value, 'square_value')
     p_norm_sq = tf.reduce_sum(square_value, axis=-1, keep_dims=True)
@@ -94,7 +94,8 @@ def squash(p):
     p_norm = tf.sqrt(p_norm_sq + 1e-9)
     sqrt_p_norm = tf.sqrt(p_norm + 1e-9)
     # p_norm = print_tensor(p_norm, 'p_norm')
-    v = p_norm_sq / (sqrt_p_norm + p_norm_sq) * p / p_norm + 0.000001
+    z_0 = z_0.value
+    v = p_norm_sq / (sqrt_p_norm + p_norm_sq) * p / p_norm + 1/z_0/10
     # v = print_tensor(v, 'v')
 
     return v
@@ -156,7 +157,7 @@ def capsule(u, op, k, s, t, z, routing):
 
       p = tf.add_n(r_t_mul_u_hat_t_list) # [N, H_1, W_1, t_1, z_1]
       # p = print_tensor(p, 'p')
-      v = squash(p)
+      v = squash(p,z_0)
       # v = print_tensor(v, 'v')
 
       if d < routing - 1:
@@ -219,7 +220,7 @@ def my_segcap(images,is_train,size, l2_reg):
     multiple = 1
     L10_u_cap3_1 = capsule(L9_u_cap2_3, "deconv", k=3, s=2, t=start_s*multiple, z=atom, routing=routing)
     u_cap_concat_3 = tf.concat([L10_u_cap3_1, skip1], axis=3)
-    L11_u_cap3_2 = capsule(u_cap_concat_3, "conv", k=3, s=1, t=start_s*multiple, z=atom*6, routing=routing)
+    L11_u_cap3_2 = capsule(u_cap_concat_3, "conv", k=3, s=1, t=start_s*multiple, z=atom*4, routing=routing)
     L12_u_cap3_3 = residual_cap_block(L11_u_cap3_2,routing=routing)
     L13_u_cap3_4 = residual_cap_block(L12_u_cap3_3,routing=routing)
     L14_u_cap3_5 = capsule(L13_u_cap3_4, "conv", k=3, s=1, t=1, z=atom, routing=routing)
