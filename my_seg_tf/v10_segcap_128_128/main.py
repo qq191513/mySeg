@@ -1,5 +1,5 @@
 if __name__ == '__main__':
-	option = '1'
+	option = '3'
 
 	if option == '1':
 		from train.train_segcap_or_unet import train_model

@@ -89,15 +89,15 @@
 ##############################      end    ######################################################
 
 # ###############################  res_segcap_mini_v8 改这里    ######################################
-# import config.config_res_segcap_mini_v8 as cfg
-# from models.res_segcap_mini_v8 import my_segcap as model
-# restore_model = True
+import config.config_res_segcap_mini_v8 as cfg
+from models.res_segcap_mini_v8 import my_segcap as model
+restore_model = True
 ##############################      end    ######################################################
 
 ###############################  res_segcap_mini_v9 改这里    ######################################
-import config.config_res_segcap_mini_v9 as cfg
-from models.res_segcap_mini_v9 import my_segcap as model
-restore_model = False
+# import config.config_res_segcap_mini_v9 as cfg
+# from models.res_segcap_mini_v9 import my_segcap as model
+# restore_model = False
 ##############################      end    ######################################################
 
 

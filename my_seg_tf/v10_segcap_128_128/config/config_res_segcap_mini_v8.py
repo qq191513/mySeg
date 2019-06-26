@@ -26,7 +26,7 @@ choose_loss = 'bce_dice_margin_focus'
 ########################        end      ########################################
 
 ##########################   输出路径   #######################################
-project_root ='/home/mo/work/seg_caps/my_seg_tf/v10_segcap_128_128'
+# project_root ='/home/mo/work/seg_caps/my_seg_tf/v10_segcap_128_128'
 output_path = '/home/mo/work/output'
 branch_name = 'v10_segcap_128_128'
 model_name = 'res_segcap_mini_v8'
